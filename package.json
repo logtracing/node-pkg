@@ -1,0 +1,34 @@
+{
+  "name": "logtracing-node",
+  "version": "0.0.1",
+  "description": "NPM Package to track log errors from NodeJS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && node dist/index.js",
+    "tsc": "tsc",
+    "tsc:init": "tsc --init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logtracing/node-pkg.git"
+  },
+  "keywords": [
+    "log",
+    "stack",
+    "trace",
+    "logging",
+    "logs"
+  ],
+  "author": "Vicente Gutiérrez (@vcgtz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logtracing/node-pkg/issues"
+  },
+  "homepage": "https://github.com/logtracing/node-pkg#readme",
+  "devDependencies": {
+    "@types/node": "^20.1.1",
+    "typescript": "^5.0.4"
+  }
+}
