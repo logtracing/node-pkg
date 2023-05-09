@@ -1,9 +1,10 @@
 import fs from 'fs';
 import os from 'os';
-import { CodeLine, ErrorStack, PrepareStackTrace } from './types';
+import { CodeLine, ErrorStack, NodeVars, OsVars, PrepareStackTrace } from './types';
 
 export default class Logger {
   private readonly _flow: string;
+
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
   private errStack: any;
@@ -16,8 +17,33 @@ export default class Logger {
     this.codeLinesLimit = 5;
   }
 
-  get flow(): string {
+  public get flow(): string {
     return this._flow;
+  }
+
+  private get osVars(): OsVars {
+    return {
+      arch: os.arch(),
+      cpus: os.cpus(),
+      hostname: os.hostname(),
+      machine: os.machine(),
+      platform: os.platform(),
+      release: os.release(),
+      version: os.version(),
+      user: {
+        username: os.userInfo().username,
+        uid: os.userInfo().uid,
+        gid: os.userInfo().gid,
+      }
+    };
+  }
+
+  private get nodeVars(): NodeVars {
+    return {
+      version: process.version,
+      args: process.argv,
+      datetime: Math.floor((new Date()).getTime() / 1000)
+    };
   }
 
   public async trackError(err: any): Promise<void> {
