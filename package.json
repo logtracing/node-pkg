@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "npm run build && node dist/index.js",
+    "test": "jest",
     "tsc": "tsc",
     "tsc:init": "tsc --init"
   },
@@ -28,7 +29,10 @@
   },
   "homepage": "https://github.com/logtracing/node-pkg#readme",
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@types/node": "^20.1.1",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"
   }
 }
