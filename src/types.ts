@@ -51,3 +51,7 @@ export interface NodeVars {
   args: string[],
   datetime: number;
 };
+
+export interface ExtraVars {
+  [identifier: string]: any;
+};
