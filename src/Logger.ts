@@ -46,6 +46,10 @@ export default class Logger {
     };
   }
 
+  private get envVars(): NodeJS.ProcessEnv {
+    return process.env;
+  }
+
   public async trackError(err: any): Promise<void> {
     this.useCustomPrepareStackTrace();
     this.errStack = await err.stack;
