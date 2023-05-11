@@ -23,6 +23,6 @@ jobs:
       - name: Building project
         run: npm run build --if-present
       - name: Publishing NPM package
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
