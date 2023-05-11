@@ -2,6 +2,8 @@
 Package to track exceptions in applications made using NodeJS.
 
 ![Node.js Tests](https://github.com/logtracing/node-pkg/actions/workflows/node.js.yml/badge.svg)
+![npm](https://img.shields.io/npm/v/@logtracing/node?color=blue)
+![npm](https://img.shields.io/npm/l/@logtracing/node?color=blue)
 
 ## :rocket: Usage (docs in progress :construction:)
 Install the package:
