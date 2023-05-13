@@ -18,11 +18,11 @@ npm i @logtracing/node
 
 Import it in your code:
 ```js
-const Logger = require('@logtracing/node');
+const { Logger } = require('@logtracing/node');
 
 // or
 
-import Logger = from '@logtracing/node';
+import { Logger } = from '@logtracing/node';
 ```
 
 Start tracking your errors:
