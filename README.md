@@ -1,9 +1,14 @@
-# LogTracing - NodeJS Package
-Package to track exceptions in applications made using NodeJS.
+<p align="center">
+  <img width="442" height="90" src="https://github.com/logtracing/node-pkg/assets/55886451/a605b6fd-14c8-4d0d-9cfa-c8f0742aa5ec">
+</p>
 
-![Node.js Tests](https://github.com/logtracing/node-pkg/actions/workflows/node.js.yml/badge.svg)
-![npm](https://img.shields.io/npm/v/@logtracing/node?color=blue)
-![npm](https://img.shields.io/npm/l/@logtracing/node?color=blue)
+<p align="center">Package to track exceptions in applications made with NodeJS.</p>
+
+<p align="center">
+  <img src="https://github.com/logtracing/node-pkg/actions/workflows/node.js.yml/badge.svg">
+  <img src="https://img.shields.io/npm/v/@logtracing/node?color=blue">
+  <img src="https://img.shields.io/npm/l/@logtracing/node?color=blue">
+</p>
 
 ## :rocket: Usage (docs in progress :construction:)
 Install the package:
