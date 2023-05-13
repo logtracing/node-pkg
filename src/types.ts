@@ -39,7 +39,6 @@ export interface OsVars {
   arch: string;
   cpus: OsCpu[];
   hostname: string;
-  machine: string;
   platform: string;
   release: string;
   version: string;
