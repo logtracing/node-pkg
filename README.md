@@ -22,7 +22,7 @@ const { Logger } = require('@logtracing/node');
 
 // or
 
-import { Logger } = from '@logtracing/node';
+import { Logger } from '@logtracing/node';
 ```
 
 Start tracking your errors:
