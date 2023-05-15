@@ -137,14 +137,4 @@ export default class Logger {
   private loadEnvVars(): void {
     this.envVars = process.env;
   }
-
-  private async storeIntoDB(): Promise<void> {
-    const error = await this.prisma.error.create({
-      data: {
-        flowName: this.flow,
-      },
-    });
-
-    console.log(error);
-  }
 };
