@@ -116,7 +116,6 @@ export default class Logger {
       arch: os.arch(),
       cpus: os.cpus(),
       hostname: os.hostname(),
-      machine: os.machine(),
       platform: os.platform(),
       release: os.release(),
       version: os.version(),
