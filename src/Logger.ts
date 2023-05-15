@@ -51,7 +51,6 @@ export default class Logger {
     //   console.error(err)
     //   await this.prisma.$disconnect();
     // }
-    console.log(this.errStack);
   }
 
   public addExtra(identifier: string, extra: any): void {
