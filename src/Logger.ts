@@ -1,5 +1,6 @@
 import fs from 'fs';
 import os from 'os';
+import { PrismaClient } from '@prisma/client';
 import { CodeLine, ErrorStack, ExtraVars, NodeVars, OsVars, PrepareStackTrace } from './types';
 
 export default class Logger {
@@ -11,6 +12,7 @@ export default class Logger {
   private nodeVars: NodeVars | null;
   private envVars: NodeJS.ProcessEnv | null;
   private extraVars: ExtraVars;
+  private prisma: PrismaClient;
 
   constructor(flow: string) {
     this._flow = flow;
@@ -21,6 +23,8 @@ export default class Logger {
     this.envVars = null;
     this.extraVars = {};
     this.codeLinesLimit = 5;
+
+    this.prisma = new PrismaClient();
   }
 
   public get flow(): string {
@@ -33,16 +37,18 @@ export default class Logger {
     this.restorePrepareStackTrace();
   }
 
-  public report(): void {
+  public async report(): Promise<void> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
 
-    console.log(this.errStack);
-    console.log(this.osVars);
-    console.log(this.envVars);
-    console.log(this.nodeVars);
-    console.log(this.extraVars);
+    try {
+      await this.storeIntoDB();
+      await this.prisma.$disconnect();
+    } catch (err) {
+      console.error(err)
+      await this.prisma.$disconnect();
+    }
   }
 
   public addExtra(identifier: string, extra: any): void {
@@ -125,5 +131,15 @@ export default class Logger {
 
   private loadEnvVars(): void {
     this.envVars = process.env;
+  }
+
+  private async storeIntoDB(): Promise<void> {
+    const error = await this.prisma.error.create({
+      data: {
+        flowName: this.flow,
+      },
+    });
+
+    console.log(error);
   }
 };
