@@ -12,5 +12,30 @@ datasource db {
 
 model Error {
   id        Int @id @default(autoincrement())
-  flowName  String
+  flow      String
+  name      String
+  message   String
+  stackStr  String
+  stack     Stack[]
+  createdAt DateTime @default(now())
+}
+
+model Stack {
+  id        Int @id @default(autoincrement())
+  file      String
+  function  String
+  line      Int
+  column    Int
+  code      CodeLines[]
+  error     Error @relation(fields: [errorId], references: [id])
+  errorId   Int
+}
+
+model CodeLines {
+  id          Int @id @default(autoincrement())
+  line        Int
+  content     String
+  isErrorLine Boolean
+  stack       Stack @relation(fields: [stackId], references: [id])
+  stackId     Int
 }
