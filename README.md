@@ -65,6 +65,20 @@ try {
 ```
 
 ## :arrow_down: Installation (for development)
+### Configuring MySQL
+This project uses `mysql` as a database provider, so it is important to have a database before start making changes.
+
+We have a `docker-compose.yml` file that provides you a database ready to use, you just need to execute:
+```bash
+docker compose up
+```
+
+Then, when the container is up, you can execute the migrations by running:
+```bash
+npm run migrate:dev
+```
+
+### Getting the code
 Clone this project:
 ```bash
 git clone git@github.com:logtracing/node-pkg.git
@@ -76,6 +90,11 @@ git clone git@github.com:logtracing/node-pkg.git logtracing-nodejs
 Install depencies:
 ```bash
 cd logtracing-nodejs && npm install
+```
+
+Creating a `.env` file and fill it with the missing information:
+```bash
+cp .env.example .env
 ```
 
 Transpile TS files into JS files:
