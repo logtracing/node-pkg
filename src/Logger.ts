@@ -1,16 +1,20 @@
 import fs from 'fs';
 import os from 'os';
+import { PrismaClient } from '@prisma/client';
 import { CodeLine, ErrorStack, ExtraVars, NodeVars, OsVars, PrepareStackTrace } from './types';
 
 export default class Logger {
   private readonly _flow: string;
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
+
   private errStack: any;
   private osVars: OsVars | null;
   private nodeVars: NodeVars | null;
   private envVars: NodeJS.ProcessEnv | null;
   private extraVars: ExtraVars;
+
+  private prisma: PrismaClient;
 
   constructor(flow: string) {
     this._flow = flow;
@@ -21,6 +25,8 @@ export default class Logger {
     this.envVars = null;
     this.extraVars = {};
     this.codeLinesLimit = 5;
+
+    this.prisma = new PrismaClient();
   }
 
   public get flow(): string {
@@ -33,16 +39,18 @@ export default class Logger {
     this.restorePrepareStackTrace();
   }
 
-  public report(): void {
+  public async report(): Promise<void> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
 
-    console.log(this.errStack);
-    console.log(this.osVars);
-    console.log(this.envVars);
-    console.log(this.nodeVars);
-    console.log(this.extraVars);
+    // try {
+    //   await this.storeIntoDB();
+    //   await this.prisma.$disconnect();
+    // } catch (err) {
+    //   console.error(err)
+    //   await this.prisma.$disconnect();
+    // }
   }
 
   public addExtra(identifier: string, extra: any): void {
@@ -55,7 +63,7 @@ export default class Logger {
 
     for (let i = start - 1; i < end - 1; i++) {
       lines.push({
-        line: i-1,
+        line: i+1,
         content: fileContent[i],
       });
     }
@@ -65,7 +73,9 @@ export default class Logger {
 
   private useCustomPrepareStackTrace(): void {
     Error.prepareStackTrace = async (error: Error, stack: NodeJS.CallSite[]): Promise<ErrorStack[]> => {
-      const errMessage: string = error.stack ?? '';
+      const errorName: string = error.name;
+      const errorMessage: string = error.message;
+      const errorStack: string = error.stack ?? '';
 
       return stack.map((callSite): ErrorStack => {
         const lineNumber: number = callSite.getLineNumber() ?? 0;
@@ -83,7 +93,9 @@ export default class Logger {
         }
 
         return {
-          errMessage,
+          errorName,
+          errorMessage,
+          errorStack,
           functionName: callSite.getFunctionName() ?? 'anonymous',
           fileName,
           lineNumber,

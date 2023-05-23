@@ -7,7 +7,9 @@ export interface CodeLine {
 };
 
 export interface ErrorStack {
-  errMessage: string,
+  errorName: string,
+  errorMessage: string,
+  errorStack: string,
   functionName: string,
   fileName: string,
   lineNumber: number,

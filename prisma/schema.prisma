@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Error {
+  id                  Int @id @default(autoincrement())
+  flow                String
+  name                String
+  message             String
+  stackStr            String
+  stack               Stack[]
+  systemDetails       SystemDetails?
+  environmentDetails  EnvironmentDetails[]
+  extraDetails        ExtraDetails[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Stack {
+  id        Int @id @default(autoincrement())
+  file      String
+  function  String
+  line      Int
+  column    Int
+  code      CodeLine[]
+  error     Error @relation(fields: [errorId], references: [id])
+  errorId   Int
+}
+
+model CodeLine {
+  id          Int @id @default(autoincrement())
+  line        Int
+  content     String
+  isErrorLine Boolean
+  stack       Stack @relation(fields: [stackId], references: [id])
+  stackId     Int
+}
+
+model SystemDetails {
+  id                Int @id @default(autoincrement())
+  arch              String
+  processor         String
+  hostname          String?
+  platform          String
+  platformRelease   String?
+  platformVersion   String?
+  user              String?
+  error             Error @relation(fields: [errorId], references: [id])
+  errorId           Int @unique
+}
+model ExecutionDetails {
+  id                  Int @id @default(autoincrement())
+  language            String
+  platform            String
+  executionFinishTime DateTime
+  arguments           ExecutionArgument[]
+}
+
+model ExecutionArgument {
+  id                  Int @id @default(autoincrement())
+  argument            String
+  executionDetails    ExecutionDetails @relation(fields: [executionDetailsId], references: [id])
+  executionDetailsId  Int
+}
+
+model EnvironmentDetails {
+  id      Int @id @default(autoincrement())
+  name    String
+  value   String
+  error   Error @relation(fields: [errorId], references: [id])
+  errorId Int
+}
+
+model ExtraDetails {
+  id      Int @id @default(autoincrement())
+  name    String
+  value   String
+  error   Error @relation(fields: [errorId], references: [id])
+  errorId Int
+}
