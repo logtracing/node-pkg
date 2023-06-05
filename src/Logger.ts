@@ -39,12 +39,12 @@ export default class Logger {
     this.restorePrepareStackTrace();
   }
 
-  public async report(): Promise<void> {
+  public async report(): Promise<ErrorModel | null> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
 
-    await this.store();
+    return await this.store();
   }
 
   public addExtra(identifier: string, extra: any): void {
