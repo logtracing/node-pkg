@@ -1,6 +1,6 @@
 import fs from 'fs';
 import os from 'os';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Error as ErrorModel } from '@prisma/client';
 import { CodeLine, ErrorStack, ExtraVars, NodeVars, OsVars, PrepareStackTrace } from './types';
 
 export default class Logger {
@@ -44,13 +44,7 @@ export default class Logger {
     this.loadNodeVars();
     this.loadEnvVars();
 
-    // try {
-    //   await this.storeIntoDB();
-    //   await this.prisma.$disconnect();
-    // } catch (err) {
-    //   console.error(err)
-    //   await this.prisma.$disconnect();
-    // }
+    await this.store();
   }
 
   public addExtra(identifier: string, extra: any): void {
@@ -82,7 +76,7 @@ export default class Logger {
         const fileName: string = callSite.getFileName() ?? '';
         let code: CodeLine[] = [];
 
-        if (!fileName.startsWith('node')) {
+        if (fileName && !fileName.startsWith('node')) {
           code = this.readLinesSync(fileName, lineNumber - this.codeLinesLimit, lineNumber + this.codeLinesLimit)
             .map((line: CodeLine) => {
               return {
@@ -136,5 +130,118 @@ export default class Logger {
 
   private loadEnvVars(): void {
     this.envVars = process.env;
+  }
+
+  private async store(): Promise<ErrorModel | null> {
+    // Stack & CodeLine
+    const stackData = [];
+    for (const stack of this.errStack as ErrorStack[]) {
+      const codeLinesData = [];
+
+      for (const line of stack.code) {
+        codeLinesData.push({
+          line: line.line,
+          content: line.content ?? '',
+          isErrorLine: line.currentLine === line.line,
+        });
+      }
+
+      stackData.push({
+        file: stack.fileName,
+        function: stack.functionName,
+        line: stack.lineNumber,
+        column: stack.columnNumber,
+        code: {
+          create: codeLinesData,
+        },
+      });
+    };
+
+    // SystemDetails
+    const systemDetailsData = {
+      arch: this.osVars?.arch,
+      processor: this.osVars?.cpus[0].model,
+      hostname: this.osVars?.hostname,
+      platform: this.osVars?.platform,
+      platformRelease: this.osVars?.release,
+      platformVersion: this.osVars?.version,
+      user: this.osVars?.user.username,
+    };
+
+    // ExecutionDetails & ExecutionArgument
+    const executionArgumentData = [];
+    for (const argument of this.nodeVars!.args) {
+      executionArgumentData.push({
+        argument: argument
+      });
+    }
+
+    const executionDetailsData = {
+      language: 'NodeJS',
+      version: this.nodeVars?.version,
+      executionFinishTime: new Date(this.nodeVars!.datetime * 1000),
+      arguments: {
+        create: executionArgumentData,
+      },
+    };
+
+    // Get EnvironmentDetails
+    const environmentDetailsData = [];
+    for (const varKey in this.envVars) {
+      environmentDetailsData.push({
+        name: varKey,
+        value: this.envVars[varKey]
+      });
+    }
+
+    // ExtraDetails
+    const extraDetailsData = [];
+    for (const extraKey in this.extraVars) {
+      extraDetailsData.push({
+        name: extraKey,
+        value: this.extraVars[extraKey]
+      });
+    }
+
+    try {
+      const generalInfo = this.errStack[0];
+
+      const errorDB: any = {
+        data: {
+          flow: this.flow,
+          name: generalInfo.errorName,
+          message: generalInfo.errorMessage,
+          stackStr: generalInfo.errorStack,
+          stack: {
+            create: stackData,
+          },
+          systemDetails: {
+            create: systemDetailsData,
+          },
+          executionDetails: {
+            create: executionDetailsData,
+          },
+          environmentDetails: {
+            create: environmentDetailsData,
+          },
+        }
+      }
+
+      if (extraDetailsData.length) {
+        errorDB.data.extraDetails = {
+          create: extraDetailsData,
+        };
+      }
+
+      const createdError = await this.prisma.error.create(errorDB);
+      await this.prisma.$disconnect();
+
+      return createdError;
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
   }
 };

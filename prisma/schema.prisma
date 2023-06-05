@@ -15,9 +15,10 @@ model Error {
   flow                String
   name                String
   message             String
-  stackStr            String
+  stackStr            String @db.Text
   stack               Stack[]
   systemDetails       SystemDetails?
+  executionDetails    ExecutionDetails?
   environmentDetails  EnvironmentDetails[]
   extraDetails        ExtraDetails[]
   createdAt           DateTime @default(now())
@@ -59,9 +60,11 @@ model SystemDetails {
 model ExecutionDetails {
   id                  Int @id @default(autoincrement())
   language            String
-  platform            String
+  version             String
   executionFinishTime DateTime
   arguments           ExecutionArgument[]
+  error               Error @relation(fields: [errorId], references: [id])
+  errorId             Int @unique
 }
 
 model ExecutionArgument {
@@ -74,7 +77,7 @@ model ExecutionArgument {
 model EnvironmentDetails {
   id      Int @id @default(autoincrement())
   name    String
-  value   String
+  value   String @db.Text
   error   Error @relation(fields: [errorId], references: [id])
   errorId Int
 }

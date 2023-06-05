@@ -4,7 +4,7 @@ CREATE TABLE `Error` (
     `flow` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
-    `stackStr` VARCHAR(191) NOT NULL,
+    `stackStr` TEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -54,9 +54,11 @@ CREATE TABLE `SystemDetails` (
 CREATE TABLE `ExecutionDetails` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `language` VARCHAR(191) NOT NULL,
-    `platform` VARCHAR(191) NOT NULL,
+    `version` VARCHAR(191) NOT NULL,
     `executionFinishTime` DATETIME(3) NOT NULL,
+    `errorId` INTEGER NOT NULL,
 
+    UNIQUE INDEX `ExecutionDetails_errorId_key`(`errorId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -73,7 +75,7 @@ CREATE TABLE `ExecutionArgument` (
 CREATE TABLE `EnvironmentDetails` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `value` VARCHAR(191) NOT NULL,
+    `value` TEXT NOT NULL,
     `errorId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -97,6 +99,9 @@ ALTER TABLE `CodeLine` ADD CONSTRAINT `CodeLine_stackId_fkey` FOREIGN KEY (`stac
 
 -- AddForeignKey
 ALTER TABLE `SystemDetails` ADD CONSTRAINT `SystemDetails_errorId_fkey` FOREIGN KEY (`errorId`) REFERENCES `Error`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExecutionDetails` ADD CONSTRAINT `ExecutionDetails_errorId_fkey` FOREIGN KEY (`errorId`) REFERENCES `Error`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ExecutionArgument` ADD CONSTRAINT `ExecutionArgument_executionDetailsId_fkey` FOREIGN KEY (`executionDetailsId`) REFERENCES `ExecutionDetails`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -6,7 +6,6 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "npm run build && node dist/index.js",
     "migrate:dev": "prisma migrate dev --name init",
     "test": "jest",
     "tsc": "tsc",
