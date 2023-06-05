@@ -10,10 +10,30 @@
   <img src="https://img.shields.io/npm/l/@logtracing/node?color=blue">
 </p>
 
-## :rocket: Usage (docs in progress :construction:)
+## :open_file_folder: Configuring your Database
+Before start using this module, you need to have a MySQL database ready to be used (locally or in a server) and create the required tables.
+
+You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/prisma/migrations/20230605191022_init/migration.sql)
+
+## :rocket: Usage
 Install the package:
 ```bash
 npm i @logtracing/node
+```
+
+Create or add a `.env` file and add the `DATABASE_URL` value and replace the required information:
+```properties
+# MySQL
+DATABASE_URL='mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<YOUR_DATABASE>'
+```
+
+Load your `.env` file using [dotenv module](https://www.npmjs.com/package/dotenv) at the very beginning of your code (before other code runs):
+```js
+require('dotenv').config();
+
+// or
+
+import 'dotenv/config';
 ```
 
 Import it in your code:
@@ -63,6 +83,8 @@ try {
   });
 }
 ```
+
+:zap: **After doing this, you'll have in your configured database all the information related with the error that you tracked.**
 
 ## :arrow_down: Installation (for development)
 ### Configuring MySQL
