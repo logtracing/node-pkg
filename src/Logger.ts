@@ -17,6 +17,10 @@ export default class Logger {
   private prisma: PrismaClient;
 
   constructor(flow: string) {
+    if (!flow) {
+      throw new Error('Flow argument is missing');
+    }
+
     this._flow = flow;
     this.prepareStackTrace = Error.prepareStackTrace;
     this.errStack = null;
@@ -34,6 +38,10 @@ export default class Logger {
   }
 
   public async trackError(err: any): Promise<void> {
+    if (!err) {
+      throw new Error('Error argument is missing');
+    }
+
     this.useCustomPrepareStackTrace();
     this.errStack = await err.stack;
     this.restorePrepareStackTrace();
