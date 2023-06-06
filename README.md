@@ -2,7 +2,7 @@
   <img width="442" height="90" src="https://github.com/logtracing/node-pkg/assets/55886451/a605b6fd-14c8-4d0d-9cfa-c8f0742aa5ec">
 </p>
 
-<p align="center">Package to track exceptions in applications made with NodeJS.</p>
+<p align="center">Suite to manage and track errors in your application using your own resources.</p>
 
 <p align="center">
   <img src="https://github.com/logtracing/node-pkg/actions/workflows/node.js.yml/badge.svg">
@@ -10,24 +10,41 @@
   <img src="https://img.shields.io/npm/l/@logtracing/node?color=blue">
 </p>
 
-## :open_file_folder: Configuring your Database
-Before start using this module, you need to have a MySQL database ready to be used (locally or in a server) and create the required tables.
+## Overview
+**Logtracing** is a suite that allows you to track errors that ocurr in your applications. It also allows you to have a full control of how and where to store all the collected information, this means that you need to have your own database where all the information will be stored.
+
+Also, **Logtracing** provides an dashboard to monitoring your errors, but you can use or create your own monitoring dashboard.
+
+Right now is available for the following tech stacks:
+- JavaScript (NodeJS)
+- Python (In Progress)
+
+**What information does this suite track?**
+- Error Stack
+- Code lines of each function
+- Environment variables
+- SO Information
+
+## :wrench: Configuration
+
+### :open_file_folder: Creating your database
+Before start using this suite, you need to have a MySQL database ready to be used (locally or in a server) and create the required tables.
 
 You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/prisma/migrations/20230605191022_init/migration.sql)
 
-## :rocket: Usage
+### :rocket: Usage
 Install the package:
 ```bash
 npm i @logtracing/node
 ```
 
-Create or add a `.env` file and add the `DATABASE_URL` value and replace the required information:
+Create a `.env` file and add the `DATABASE_URL` value and replace the required information:
 ```properties
 # MySQL
 DATABASE_URL='mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<YOUR_DATABASE>'
 ```
 
-Load your `.env` file using [dotenv module](https://www.npmjs.com/package/dotenv) at the very beginning of your code (before other code runs):
+Load your `.env` file using the [dotenv module](https://www.npmjs.com/package/dotenv) at the very beginning of your code (before other code runs):
 ```js
 require('dotenv').config();
 
@@ -86,7 +103,7 @@ try {
 
 :zap: **After doing this, you'll have in your configured database all the information related with the error that you tracked.**
 
-## :arrow_down: Installation (for development)
+## :arrow_down: Installation for development purposes
 ### Configuring MySQL
 This project uses `mysql` as a database provider, so it is important to have a database before start making changes.
 
