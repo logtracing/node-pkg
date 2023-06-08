@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import { PrismaClient, Error as ErrorModel } from '@prisma/client';
-import { CodeLine, ErrorStack, ExtraVars, NodeVars, OsVars, PrepareStackTrace } from './types';
+import { CodeLine, ErrorStack, ExtraVars, ExtraValue, NodeVars, OsVars, PrepareStackTrace } from './types';
 
 export default class Logger {
   private readonly _flow: string;
@@ -55,8 +55,14 @@ export default class Logger {
     return await this.store();
   }
 
-  public addExtra(identifier: string, extra: string): void {
-    this.extraVars[identifier] = extra;
+  public addExtra(identifier: string, extra: ExtraValue): void {
+    let value: ExtraValue = extra;
+
+    if (typeof(extra) === 'object') {
+      value = JSON.stringify(extra);
+    }
+
+    this.extraVars[identifier] = value;
   }
 
   private readLinesSync(filePath: string, start: number, end: number): CodeLine[] {
