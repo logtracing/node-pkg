@@ -43,6 +43,14 @@ Create a `.env` file and add the `DATABASE_URL` value and replace the required i
 # MySQL
 DATABASE_URL='mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<YOUR_DATABASE>'
 ```
+---
+**IMPORTANT**
+
+Since this package uses [prisma](https://www.prisma.io/) as an ORM, before starting to work, you need to create a prisma client. Simply execute the following command:
+```bash
+npx prisma generate --schema=./node_modules/@logtracing/node/prisma/schema.prisma
+```
+---
 
 Load your `.env` file using the [dotenv module](https://www.npmjs.com/package/dotenv) at the very beginning of your code (before other code runs):
 ```js
