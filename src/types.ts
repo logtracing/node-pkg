@@ -53,6 +53,8 @@ export interface NodeVars {
   datetime: number;
 };
 
+export type ExtraValue = object | string;
+
 export interface ExtraVars {
-  [identifier: string]: string;
+  [identifier: string]: ExtraValue;
 };
