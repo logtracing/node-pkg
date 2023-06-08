@@ -85,7 +85,7 @@ CREATE TABLE `EnvironmentDetails` (
 CREATE TABLE `ExtraDetails` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `value` VARCHAR(191) NOT NULL,
+    `value` TEXT NOT NULL,
     `errorId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

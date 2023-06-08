@@ -85,7 +85,7 @@ model EnvironmentDetails {
 model ExtraDetails {
   id      Int @id @default(autoincrement())
   name    String
-  value   String
+  value   String @db.Text
   error   Error @relation(fields: [errorId], references: [id])
   errorId Int
 }
