@@ -54,5 +54,5 @@ export interface NodeVars {
 };
 
 export interface ExtraVars {
-  [identifier: string]: any;
+  [identifier: string]: string;
 };

@@ -8,7 +8,7 @@ export default class Logger {
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
 
-  private errStack: any;
+  private errStack: ErrorStack[];
   private osVars: OsVars | null;
   private nodeVars: NodeVars | null;
   private envVars: NodeJS.ProcessEnv | null;
@@ -23,7 +23,7 @@ export default class Logger {
 
     this._flow = flow;
     this.prepareStackTrace = Error.prepareStackTrace;
-    this.errStack = null;
+    this.errStack = [];
     this.osVars = null;
     this.nodeVars = null;
     this.envVars = null;
@@ -55,7 +55,7 @@ export default class Logger {
     return await this.store();
   }
 
-  public addExtra(identifier: string, extra: any): void {
+  public addExtra(identifier: string, extra: string): void {
     this.extraVars[identifier] = extra;
   }
 
