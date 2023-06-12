@@ -12,6 +12,7 @@ datasource db {
 
 model Error {
   id                  Int @id @default(autoincrement())
+  package             String
   flow                String
   name                String
   message             String

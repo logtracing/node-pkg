@@ -30,7 +30,7 @@ Right now is available for the following tech stacks:
 ### :open_file_folder: Creating your database
 Before start using this suite, you need to have a MySQL database ready to be used (locally or in a server) and create the required tables.
 
-You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/prisma/migrations/20230608173947_init/migration.sql)
+You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/prisma/migrations/20230612154657_init/migration.sql)
 
 ### :rocket: Usage
 Install the package:
