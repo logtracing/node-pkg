@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE `Error` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `package` VARCHAR(191) NOT NULL,
     `flow` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,

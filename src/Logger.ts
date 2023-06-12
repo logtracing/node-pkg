@@ -223,6 +223,7 @@ export default class Logger {
       const errorDB: any = {
         data: {
           flow: this.flow,
+          package: 'Node.js',
           name: generalInfo.errorName,
           message: generalInfo.errorMessage,
           stackStr: generalInfo.errorStack,
