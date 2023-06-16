@@ -1,4 +1,14 @@
 -- CreateTable
+CREATE TABLE `ErrorGroup` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Error` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `package` VARCHAR(191) NOT NULL,
@@ -6,6 +16,7 @@ CREATE TABLE `Error` (
     `name` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
     `stackStr` TEXT NOT NULL,
+    `errorGroupId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -91,6 +102,9 @@ CREATE TABLE `ExtraDetails` (
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Error` ADD CONSTRAINT `Error_errorGroupId_fkey` FOREIGN KEY (`errorGroupId`) REFERENCES `ErrorGroup`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Stack` ADD CONSTRAINT `Stack_errorId_fkey` FOREIGN KEY (`errorId`) REFERENCES `Error`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

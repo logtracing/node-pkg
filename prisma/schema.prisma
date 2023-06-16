@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ErrorGroup {
+  id        Int @id @default(autoincrement())
+  name      String
+  errors    Error[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Error {
   id                  Int @id @default(autoincrement())
   package             String
@@ -22,6 +30,8 @@ model Error {
   executionDetails    ExecutionDetails?
   environmentDetails  EnvironmentDetails[]
   extraDetails        ExtraDetails[]
+  errorGroup          ErrorGroup? @relation(fields: [errorGroupId], references: [id])
+  errorGroupId        Int?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
