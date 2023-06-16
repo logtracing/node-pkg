@@ -1,3 +1,5 @@
+import { ErrorGroup } from '@prisma/client';
+
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
 export interface CodeLine {
@@ -57,4 +59,8 @@ export type ExtraValue = object | string;
 
 export interface ExtraVars {
   [identifier: string]: ExtraValue;
+};
+
+export interface ReportOptions {
+  group: ErrorGroup,
 };

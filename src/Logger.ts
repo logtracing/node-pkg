@@ -1,7 +1,8 @@
 import fs from 'fs';
 import os from 'os';
-import { PrismaClient, Error as ErrorModel } from '@prisma/client';
-import { CodeLine, ErrorStack, ExtraVars, ExtraValue, NodeVars, OsVars, PrepareStackTrace } from './types';
+import { PrismaClient, Error as ErrorModel, ErrorGroup } from '@prisma/client';
+import { CodeLine, ErrorStack, ExtraVars, ExtraValue, NodeVars, OsVars, PrepareStackTrace, ReportOptions } from './types';
+import { group } from 'console';
 
 export default class Logger {
   private readonly _flow: string;
@@ -47,12 +48,12 @@ export default class Logger {
     this.restorePrepareStackTrace();
   }
 
-  public async report(): Promise<ErrorModel | null> {
+  public async report(opts: ReportOptions | null = null): Promise<ErrorModel | null> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
 
-    return await this.store();
+    return await this.store(opts);
   }
 
   public addExtra(identifier: string, extra: ExtraValue): void {
@@ -63,6 +64,26 @@ export default class Logger {
     }
 
     this.extraVars[identifier] = value;
+  }
+
+  public async getOrCreateGroup(name: string): Promise<ErrorGroup | null> {
+    try {
+      const groupName: string = name.toLocaleLowerCase();
+
+      const errorGroupCreated = await this.prisma.errorGroup.upsert({
+        where: { name: groupName },
+        create: { name: groupName },
+        update: {},
+      });
+      await this.prisma.$disconnect();
+      
+      return errorGroupCreated;
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
   }
 
   private readLinesSync(filePath: string, start: number, end: number): CodeLine[] {
@@ -146,7 +167,7 @@ export default class Logger {
     this.envVars = process.env;
   }
 
-  private async store(): Promise<ErrorModel | null> {
+  private async store(opts: ReportOptions | null = null): Promise<ErrorModel | null> {
     // Stack & CodeLine
     const stackData = [];
     for (const stack of this.errStack as ErrorStack[]) {
@@ -245,6 +266,12 @@ export default class Logger {
       if (extraDetailsData.length) {
         errorDB.data.extraDetails = {
           create: extraDetailsData,
+        };
+      }
+
+      if (opts && opts.group) {
+        errorDB.data.errorGroup = {
+          connect: { id: opts.group.id },
         };
       }
 

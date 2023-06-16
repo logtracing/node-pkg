@@ -10,23 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ErrorGroup {
+  @@map("errors_groups")
+  id        Int @id @default(autoincrement())
+  name      String @unique
+  errors    Error[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Error {
+  @@map("errors")
   id                  Int @id @default(autoincrement())
   package             String
   flow                String
   name                String
   message             String
-  stackStr            String @db.Text
+  stackStr            String @db.Text @map("stack_str")
   stack               Stack[]
   systemDetails       SystemDetails?
   executionDetails    ExecutionDetails?
   environmentDetails  EnvironmentDetails[]
   extraDetails        ExtraDetails[]
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  errorGroup          ErrorGroup? @relation(fields: [errorGroupId], references: [id])
+  errorGroupId        Int? @map("error_group_id")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 }
 
 model Stack {
+  @@map("stack")
   id        Int @id @default(autoincrement())
   file      String
   function  String
@@ -34,59 +47,65 @@ model Stack {
   column    Int
   code      CodeLine[]
   error     Error @relation(fields: [errorId], references: [id])
-  errorId   Int
+  errorId   Int @map("error_id")
 }
 
 model CodeLine {
+  @@map("stack_code_lines")
   id          Int @id @default(autoincrement())
   line        Int
   content     String
-  isErrorLine Boolean
+  isErrorLine Boolean @map("is_error_line")
   stack       Stack @relation(fields: [stackId], references: [id])
-  stackId     Int
+  stackId     Int @map("stack_id")
 }
 
 model SystemDetails {
+  @@map("system_details")
   id                Int @id @default(autoincrement())
   arch              String
   processor         String
   hostname          String?
   platform          String
-  platformRelease   String?
-  platformVersion   String?
+  platformRelease   String? @map("platform_release")
+  platformVersion   String? @map("platform_version")
   user              String?
   error             Error @relation(fields: [errorId], references: [id])
-  errorId           Int @unique
+  errorId           Int @unique @map("error_id")
 }
 model ExecutionDetails {
+  @@map("execution_details")
   id                  Int @id @default(autoincrement())
   language            String
   version             String
-  executionFinishTime DateTime
+  executionFinishTime DateTime @map("execution_finish_time")
   arguments           ExecutionArgument[]
   error               Error @relation(fields: [errorId], references: [id])
-  errorId             Int @unique
+  errorId             Int @unique @map("error_id")
 }
 
 model ExecutionArgument {
+  @@map("execution_arguments")
   id                  Int @id @default(autoincrement())
   argument            String
   executionDetails    ExecutionDetails @relation(fields: [executionDetailsId], references: [id])
-  executionDetailsId  Int
+  executionDetailsId  Int @map("execution_details_id")
 }
 
 model EnvironmentDetails {
+  @@map("envirnment_details")
   id      Int @id @default(autoincrement())
   name    String
   value   String @db.Text
   error   Error @relation(fields: [errorId], references: [id])
-  errorId Int
+  errorId Int @map("error_id")
 }
 
 model ExtraDetails {
+  @@map("extra_details")
   id      Int @id @default(autoincrement())
   name    String
   value   String @db.Text
   error   Error @relation(fields: [errorId], references: [id])
-  errorId Int
+  errorId Int @map("error_id")
 }
