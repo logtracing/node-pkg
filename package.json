@@ -1,6 +1,6 @@
 {
   "name": "@logtracing/node",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "NPM Package to track log errors from NodeJS",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
