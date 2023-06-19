@@ -85,7 +85,7 @@ CREATE TABLE `execution_arguments` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `envirnment_details` (
+CREATE TABLE `environment_details` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `value` TEXT NOT NULL,
@@ -123,7 +123,7 @@ ALTER TABLE `execution_details` ADD CONSTRAINT `execution_details_error_id_fkey`
 ALTER TABLE `execution_arguments` ADD CONSTRAINT `execution_arguments_execution_details_id_fkey` FOREIGN KEY (`execution_details_id`) REFERENCES `execution_details`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `envirnment_details` ADD CONSTRAINT `envirnment_details_error_id_fkey` FOREIGN KEY (`error_id`) REFERENCES `errors`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `environment_details` ADD CONSTRAINT `environment_details_error_id_fkey` FOREIGN KEY (`error_id`) REFERENCES `errors`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `extra_details` ADD CONSTRAINT `extra_details_error_id_fkey` FOREIGN KEY (`error_id`) REFERENCES `errors`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

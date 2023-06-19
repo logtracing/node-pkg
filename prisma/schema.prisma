@@ -93,7 +93,7 @@ model ExecutionArgument {
 }
 
 model EnvironmentDetails {
-  @@map("envirnment_details")
+  @@map("environment_details")
   id      Int @id @default(autoincrement())
   name    String
   value   String @db.Text
