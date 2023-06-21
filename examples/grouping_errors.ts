@@ -31,15 +31,13 @@ const main = async () => {
   try {
     baz();
   } catch (err) {
-    const group = await logger.getOrCreateGroup('Dashboard Errors One');
+    await logger.trackError(err);
+    const errorTracked = await logger.report({
+      group: (await logger.getOrCreateGroup('Dashboard Errors One'))!
+    });
 
-    logger.trackError(err)
-      .then(() => logger.report({ group: group! }))
-      .then((errTracked) => {
-        console.log('Error tracked.');
-        console.log(errTracked);
-      })
-      .catch((e) => console.error(e));
+    console.log('Error tracked.');
+    console.log(errorTracked);
   }
 };
 
