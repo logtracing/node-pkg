@@ -127,6 +127,7 @@ model ExtraDetails {
   id      Int @id @default(autoincrement())
   name    String
   value   String @db.Text
+  isJson  Boolean @map("is_json")
   error   Error @relation(fields: [errorId], references: [id])
   errorId Int @map("error_id")
 }
