@@ -11,13 +11,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ErrorGroup {
-  @@map("errors_groups")
+model LogGroup {
+  @@map("log_groups")
   id        Int @id @default(autoincrement())
   name      String @unique
   errors    Error[]
+  logs      Log[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Log {
+  @@map("logs")
+  id          Int @id @default(autoincrement())
+  transport   Transport @default(DEBUG)
+  flow        String
+  content     String @db.Text
+  logGroup    LogGroup? @relation(fields: [logGroupId], references: [id])
+  logGroupId  Int? @map("log_group_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Transport {
+  DEBUG
+  INFO
+  WARNING
+  ERROR
 }
 
 model Error {
@@ -33,8 +53,8 @@ model Error {
   executionDetails    ExecutionDetails?
   environmentDetails  EnvironmentDetails[]
   extraDetails        ExtraDetails[]
-  errorGroup          ErrorGroup? @relation(fields: [errorGroupId], references: [id])
-  errorGroupId        Int? @map("error_group_id")
+  logGroup            LogGroup? @relation(fields: [logGroupId], references: [id])
+  logGroupId          Int? @map("log_group_id")
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 }

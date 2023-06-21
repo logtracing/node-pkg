@@ -1,11 +1,24 @@
 -- CreateTable
-CREATE TABLE `errors_groups` (
+CREATE TABLE `log_groups` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `errors_groups_name_key`(`name`),
+    UNIQUE INDEX `log_groups_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `logs` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `transport` ENUM('DEBUG', 'INFO', 'WARNING', 'ERROR') NOT NULL DEFAULT 'DEBUG',
+    `flow` VARCHAR(191) NOT NULL,
+    `content` TEXT NOT NULL,
+    `log_group_id` INTEGER NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -17,7 +30,7 @@ CREATE TABLE `errors` (
     `name` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
     `stack_str` TEXT NOT NULL,
-    `error_group_id` INTEGER NULL,
+    `log_group_id` INTEGER NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -105,7 +118,10 @@ CREATE TABLE `extra_details` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `errors` ADD CONSTRAINT `errors_error_group_id_fkey` FOREIGN KEY (`error_group_id`) REFERENCES `errors_groups`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `logs` ADD CONSTRAINT `logs_log_group_id_fkey` FOREIGN KEY (`log_group_id`) REFERENCES `log_groups`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `errors` ADD CONSTRAINT `errors_log_group_id_fkey` FOREIGN KEY (`log_group_id`) REFERENCES `log_groups`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `stack` ADD CONSTRAINT `stack_error_id_fkey` FOREIGN KEY (`error_id`) REFERENCES `errors`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
