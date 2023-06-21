@@ -1,8 +1,7 @@
 import fs from 'fs';
 import os from 'os';
-import { PrismaClient, Error as ErrorModel, ErrorGroup } from '@prisma/client';
+import { PrismaClient, Error as ErrorModel, LogGroup, Transport, Log } from '@prisma/client';
 import { CodeLine, ErrorStack, ExtraVars, ExtraValue, NodeVars, OsVars, PrepareStackTrace, ReportOptions } from './types';
-import { group } from 'console';
 
 export default class Logger {
   private readonly _flow: string;
@@ -66,18 +65,118 @@ export default class Logger {
     this.extraVars[identifier] = value;
   }
 
-  public async getOrCreateGroup(name: string): Promise<ErrorGroup | null> {
+  public async getOrCreateGroup(name: string): Promise<LogGroup | null> {
     try {
       const groupName: string = name.toLocaleLowerCase();
 
-      const errorGroupCreated = await this.prisma.errorGroup.upsert({
+      const logGroupCreated = await this.prisma.logGroup.upsert({
         where: { name: groupName },
         create: { name: groupName },
         update: {},
       });
       await this.prisma.$disconnect();
       
-      return errorGroupCreated;
+      return logGroupCreated;
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+
+  public async debug(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          transport: Transport.DEBUG,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+
+  public async info(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          transport: Transport.INFO,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+
+  public async warning(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          transport: Transport.WARNING,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+
+  public async error(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          transport: Transport.ERROR,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
     } catch (err) {
       console.error(err);
 
@@ -234,7 +333,7 @@ export default class Logger {
     for (const extraKey in this.extraVars) {
       extraDetailsData.push({
         name: extraKey,
-        value: this.extraVars[extraKey]
+        value: this.extraVars[extraKey],
       });
     }
 
@@ -270,7 +369,7 @@ export default class Logger {
       }
 
       if (opts && opts.group) {
-        errorDB.data.errorGroup = {
+        errorDB.data.logGroup = {
           connect: { id: opts.group.id },
         };
       }
@@ -285,5 +384,14 @@ export default class Logger {
       await this.prisma.$disconnect();
       return null;
     }
+  }
+
+  private isJson(possibleJson: string): boolean {
+    try {
+        JSON.parse(possibleJson);
+    } catch (e) {
+        return false;
+    }
+    return true;
   }
 };

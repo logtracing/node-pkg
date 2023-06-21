@@ -1,4 +1,4 @@
-import { ErrorGroup } from '@prisma/client';
+import { LogGroup } from '@prisma/client';
 
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
@@ -62,5 +62,5 @@ export interface ExtraVars {
 };
 
 export interface ReportOptions {
-  group: ErrorGroup,
+  group: LogGroup,
 };
