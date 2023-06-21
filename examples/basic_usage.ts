@@ -30,13 +30,11 @@ const main = async () => {
   try {
     baz();
   } catch (err) {
-    logger.trackError(err)
-      .then(() => logger.report())
-      .then((errTracked) => {
-        console.log('Error tracked.');
-        console.log(errTracked);
-      })
-      .catch((e) => console.error(e));
+    await logger.trackError(err);
+    const errorTracked = await logger.report();
+
+    console.log('Error tracked.');
+    console.log(errorTracked);
   }
 };
 
