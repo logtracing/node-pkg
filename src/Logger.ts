@@ -60,6 +60,8 @@ export default class Logger {
 
     if (typeof(extra) === 'object') {
       value = JSON.stringify(extra);
+    } else {
+      value = extra
     }
 
     this.extraVars[identifier] = value;
@@ -334,6 +336,7 @@ export default class Logger {
       extraDetailsData.push({
         name: extraKey,
         value: this.extraVars[extraKey],
+        isJson: this.isJson(this.extraVars[extraKey])
       });
     }
 

@@ -58,7 +58,7 @@ export interface NodeVars {
 export type ExtraValue = object | string;
 
 export interface ExtraVars {
-  [identifier: string]: ExtraValue;
+  [identifier: string]: string;
 };
 
 export interface ReportOptions {
