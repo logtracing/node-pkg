@@ -1,6 +1,6 @@
 import fs from 'fs';
 import os from 'os';
-import { PrismaClient, Error as ErrorModel, LogGroup, Transport, Log } from '@prisma/client';
+import { PrismaClient, ErrorException, LogGroup, LogLevel, Log } from '@prisma/client';
 import { CodeLine, ErrorStack, ExtraVars, ExtraValue, NodeVars, OsVars, PrepareStackTrace, ReportOptions } from './types';
 
 export default class Logger {
@@ -47,7 +47,7 @@ export default class Logger {
     this.restorePrepareStackTrace();
   }
 
-  public async report(opts: ReportOptions | null = null): Promise<ErrorModel | null> {
+  public async report(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
@@ -87,11 +87,36 @@ export default class Logger {
     }
   }
 
+  public async trace(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          level: LogLevel.TRACE,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+  
   public async debug(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
     try {
       const logDebug: any = {
         data: {
-          transport: Transport.DEBUG,
+          level: LogLevel.DEBUG,
           flow: this.flow,
           content: content,
         },
@@ -116,7 +141,7 @@ export default class Logger {
     try {
       const logDebug: any = {
         data: {
-          transport: Transport.INFO,
+          level: LogLevel.INFO,
           flow: this.flow,
           content: content,
         },
@@ -137,11 +162,11 @@ export default class Logger {
     }
   }
 
-  public async warning(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+  public async warn(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
     try {
       const logDebug: any = {
         data: {
-          transport: Transport.WARNING,
+          level: LogLevel.WARN,
           flow: this.flow,
           content: content,
         },
@@ -166,7 +191,32 @@ export default class Logger {
     try {
       const logDebug: any = {
         data: {
-          transport: Transport.ERROR,
+          level: LogLevel.ERROR,
+          flow: this.flow,
+          content: content,
+        },
+      };
+
+      if (opts && opts.group) {
+        logDebug.data.logGroup = {
+          connect: { id: opts.group.id },
+        };
+      }
+
+      return await this.prisma.log.create(logDebug);
+    } catch (err) {
+      console.error(err);
+
+      await this.prisma.$disconnect();
+      return null;
+    }
+  }
+
+  public async fatal(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+    try {
+      const logDebug: any = {
+        data: {
+          level: LogLevel.FATAL,
           flow: this.flow,
           content: content,
         },
@@ -268,7 +318,7 @@ export default class Logger {
     this.envVars = process.env;
   }
 
-  private async store(opts: ReportOptions | null = null): Promise<ErrorModel | null> {
+  private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     // Stack & CodeLine
     const stackData = [];
     for (const stack of this.errStack as ErrorStack[]) {
@@ -377,7 +427,7 @@ export default class Logger {
         };
       }
 
-      const createdError = await this.prisma.error.create(errorDB);
+      const createdError = await this.prisma.errorException.create(errorDB);
       await this.prisma.$disconnect();
 
       return createdError;
