@@ -13,35 +13,37 @@ datasource db {
 
 model LogGroup {
   @@map("log_groups")
-  id        Int @id @default(autoincrement())
-  name      String @unique
-  errors    Error[]
-  logs      Log[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int @id @default(autoincrement())
+  name              String @unique
+  logs              Log[]
+  errorExceptions   ErrorException[]
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 }
 
 model Log {
   @@map("logs")
   id          Int @id @default(autoincrement())
-  transport   Transport @default(DEBUG)
+  level       LogLevel @default(INFO)
   flow        String
   content     String @db.Text
   logGroup    LogGroup? @relation(fields: [logGroupId], references: [id])
   logGroupId  Int? @map("log_group_id")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
-enum Transport {
+enum LogLevel {
+  TRACE
   DEBUG
   INFO
-  WARNING
+  WARN
   ERROR
+  FATAL
 }
 
-model Error {
-  @@map("errors")
+model ErrorException {
+  @@map("error_exceptions")
   id                  Int @id @default(autoincrement())
   package             String
   flow                String
@@ -61,14 +63,14 @@ model Error {
 
 model Stack {
   @@map("stack")
-  id        Int @id @default(autoincrement())
-  file      String
-  function  String
-  line      Int
-  column    Int
-  code      CodeLine[]
-  error     Error @relation(fields: [errorId], references: [id])
-  errorId   Int @map("error_id")
+  id                Int @id @default(autoincrement())
+  file              String
+  function          String
+  line              Int
+  column            Int
+  code              CodeLine[]
+  errorException    ErrorException @relation(fields: [errorExceptionId], references: [id])
+  errorExceptionId  Int @map("error_exception_id")
 }
 
 model CodeLine {
@@ -91,8 +93,8 @@ model SystemDetails {
   platformRelease   String? @map("platform_release")
   platformVersion   String? @map("platform_version")
   user              String?
-  error             Error @relation(fields: [errorId], references: [id])
-  errorId           Int @unique @map("error_id")
+  errorException    ErrorException @relation(fields: [errorExceptionId], references: [id])
+  errorExceptionId  Int @unique @map("error_exception_id")
 }
 model ExecutionDetails {
   @@map("execution_details")
@@ -101,8 +103,8 @@ model ExecutionDetails {
   version             String
   executionFinishTime DateTime @map("execution_finish_time")
   arguments           ExecutionArgument[]
-  error               Error @relation(fields: [errorId], references: [id])
-  errorId             Int @unique @map("error_id")
+  errorException      ErrorException @relation(fields: [errorExceptionId], references: [id])
+  errorExceptionId    Int @unique @map("error_exception_id")
 }
 
 model ExecutionArgument {
@@ -115,19 +117,19 @@ model ExecutionArgument {
 
 model EnvironmentDetails {
   @@map("environment_details")
-  id      Int @id @default(autoincrement())
-  name    String
-  value   String @db.Text
-  error   Error @relation(fields: [errorId], references: [id])
-  errorId Int @map("error_id")
+  id                Int @id @default(autoincrement())
+  name              String
+  value             String @db.Text
+  errorException    ErrorException @relation(fields: [errorExceptionId], references: [id])
+  errorExceptionId  Int @map("error_exception_id")
 }
 
 model ExtraDetails {
   @@map("extra_details")
-  id      Int @id @default(autoincrement())
-  name    String
-  value   String @db.Text
-  isJson  Boolean @map("is_json")
-  error   Error @relation(fields: [errorId], references: [id])
-  errorId Int @map("error_id")
+  id                Int @id @default(autoincrement())
+  name              String
+  value             String @db.Text
+  isJson            Boolean @map("is_json")
+  errorException    ErrorException @relation(fields: [errorExceptionId], references: [id])
+  errorExceptionId  Int @map("error_exception_id")
 }
