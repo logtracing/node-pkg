@@ -73,3 +73,14 @@ export interface SimpleLog {
   createdAt?: Date,
   updatedAt?: Date,
 }
+
+export interface ErrorException {
+  package: string,
+  flow: string,
+  name: string,
+  message: string,
+  stackStr: string,
+  logGroupId?: number,
+  createdAt?: Date,
+  updatedAt?: Date,
+}

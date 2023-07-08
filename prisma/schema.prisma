@@ -45,6 +45,7 @@ enum LogLevel {
   FATAL
 }
 
+// Migrated
 model ErrorException {
   @@map("error_exceptions")
   id                  Int @id @default(autoincrement())

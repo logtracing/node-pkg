@@ -1,7 +1,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class LogGroup extends Model {
+  class ErrorException extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,33 +9,35 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      LogGroup.hasMany(models.Log, {
-        as: 'Logs',
-      });
-
-      LogGroup.hasMany(models.ErrorException, {
-        as: 'ErrorExceptions',
+      ErrorException.belongsTo(models.LogGroup, {
+        foreignKey: 'logGroupId',
+        as: 'LogGroup',
       });
     }
   }
-  LogGroup.init(
+  ErrorException.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
+      package: DataTypes.STRING,
+      flow: DataTypes.STRING,
       name: DataTypes.STRING,
+      message: DataTypes.STRING,
+      stackStr: DataTypes.TEXT,
+      logGroupId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
       timestamps: true,
-      modelName: 'LogGroup',
-      tableName: 'logGroups',
-    }
+      modelName: 'ErrorException',
+      tableName: 'errorExceptions',
+    },
   );
 
-  return LogGroup;
+  return ErrorException;
 };

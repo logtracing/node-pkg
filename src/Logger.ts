@@ -2,9 +2,10 @@ import fs from 'fs';
 import os from 'os';
 import {
   CodeLine,
+  ErrorException as ErrorExceptionType,
   ErrorStack,
-  ExtraVars,
   ExtraValue,
+  ExtraVars,
   NodeVars,
   OsVars,
   PrepareStackTrace,
@@ -12,10 +13,12 @@ import {
   SimpleLog,
 } from './types';
 // @ts-ignore
-import { Log, LogGroup } from './db/models/index';
+import { Log, LogGroup, ErrorException } from './db/models/index';
 
 
 export default class Logger {
+  public static PACKAGE: string = 'NODE.JS';
+
   private readonly _flow: string;
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
@@ -41,8 +44,6 @@ export default class Logger {
     this.envVars = null;
     this.extraVars = {};
     this.codeLinesLimit = 5;
-
-    // this.prisma = new PrismaClient();
   }
 
   public get flow(): string {
@@ -242,7 +243,7 @@ export default class Logger {
     this.envVars = process.env;
   }
 
-  private async store(opts: ReportOptions | null = null): Promise<any | null> {
+  private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     /*
     const stackData = [];
     for (const stack of this.errStack as ErrorStack[]) {
@@ -358,6 +359,28 @@ export default class Logger {
       await this.prisma.$disconnect();
       return null;
     }*/
+
+    try {
+      const generalInfo = this.errStack[0];
+
+      const errorExceptionData: ErrorExceptionType = {
+        flow: this.flow,
+        package: Logger.PACKAGE,
+        name: generalInfo.errorName,
+        message: generalInfo.errorMessage,
+        stackStr: generalInfo.errorStack,
+      }
+
+      if (opts && opts.group) {
+        errorExceptionData.logGroupId = opts.group.id;
+      }
+
+      return await ErrorException.create(errorExceptionData);
+    } catch (err) {
+      console.error(err);
+
+      return null;
+    }
   }
 
   private isJson(possibleJson: string): boolean {
