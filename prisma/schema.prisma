@@ -11,6 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Migrated
 model LogGroup {
   @@map("log_groups")
   id                Int @id @default(autoincrement())
@@ -21,6 +22,7 @@ model LogGroup {
   updatedAt         DateTime @updatedAt @map("updated_at")
 }
 
+// Migrated
 model Log {
   @@map("logs")
   id          Int @id @default(autoincrement())
@@ -33,6 +35,7 @@ model Log {
   updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
+// Migrated
 enum LogLevel {
   TRACE
   DEBUG

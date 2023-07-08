@@ -2,21 +2,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Logs', {
+    await queryInterface.createTable('logs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
-        type: Sequelize.STRING
+      level: {
+        type: Sequelize.ENUM('TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'),
+        defaultValue: 'INFO',
       },
-      lastName: {
-        type: Sequelize.STRING
+      flow: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
-      email: {
-        type: Sequelize.STRING
+      content: {
+        type: Sequelize.TEXT,
+      },
+      logGroupId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'logGroups',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
@@ -29,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Logs');
+    await queryInterface.dropTable('logs');
   }
 };

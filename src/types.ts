@@ -62,5 +62,14 @@ export interface ExtraVars {
 };
 
 export interface ReportOptions {
-  group: LogGroup,
+  group: any,
 };
+
+export interface SimpleLog {
+  level: string,
+  flow: string,
+  content: string,
+  logGroupId?: number,
+  createdAt?: Date,
+  updatedAt?: Date,
+}

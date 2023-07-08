@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Log extends Model {
     /**
@@ -11,15 +9,36 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Log.belongsTo(models.LogGroup, {
+        foreignKey: 'logGroupId',
+        as: 'LogGroup',
+      });
     }
   }
-  Log.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Log',
-  });
+  Log.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      level: {
+        type: DataTypes.ENUM,
+        values: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'],
+      },
+      flow: DataTypes.STRING,
+      content: DataTypes.TEXT,
+      logGroupId: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+    },
+    {
+      sequelize,
+      timestamps: true,
+      modelName: 'Log',
+      tableName: 'logs',
+    },
+  );
+
   return Log;
 };
