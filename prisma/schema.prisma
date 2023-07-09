@@ -89,6 +89,7 @@ model CodeLine {
   stackId     Int @map("stack_id")
 }
 
+// Migrated
 model SystemDetails {
   @@map("system_details")
   id                Int @id @default(autoincrement())

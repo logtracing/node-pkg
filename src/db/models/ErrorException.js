@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       ErrorException.hasMany(models.Stack, {
         as: 'Stack',
       });
+
+      ErrorException.hasOne(models.SystemDetails, {
+        as: 'SystemDetails',
+      });
     }
   }
   ErrorException.init(

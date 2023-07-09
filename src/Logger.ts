@@ -18,7 +18,8 @@ import { // @ts-ignore
   Log, // @ts-ignore
   LogGroup, // @ts-ignore
   ErrorException, // @ts-ignore
-  Stack,
+  Stack, // @ts-ignore
+  SystemDetails,
 } from './db/models/index';
 
 
@@ -251,16 +252,6 @@ export default class Logger {
 
   private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     /*
-    const systemDetailsData = {
-      arch: this.osVars?.arch,
-      processor: this.osVars?.cpus[0].model,
-      hostname: this.osVars?.hostname,
-      platform: this.osVars?.platform,
-      platformRelease: this.osVars?.release,
-      platformVersion: this.osVars?.version,
-      user: this.osVars?.user.username,
-    };
-
     const executionArgumentData = [];
     for (const argument of this.nodeVars!.args) {
       executionArgumentData.push({
@@ -335,6 +326,19 @@ export default class Logger {
         }
         await CodeLine.bulkCreate(codeLinesData);
       };
+
+      // system details
+      const systemDetailsData = {
+        arch: this.osVars?.arch,
+        processor: this.osVars?.cpus[0].model,
+        hostname: this.osVars?.hostname,
+        platform: this.osVars?.platform,
+        platformRelease: this.osVars?.release,
+        platformVersion: this.osVars?.version,
+        user: this.osVars?.user.username,
+        errorExceptionId: errorException.id,
+      };
+      await SystemDetails.create(systemDetailsData);
 
       return errorException;
     } catch (err) {
