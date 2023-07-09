@@ -7,10 +7,9 @@
   "scripts": {
     "build": "tsc",
     "db:migrate": "sequelize-cli db:migrate",
-    "migrate:dev": "prisma migrate dev --name init",
     "test": "jest",
-    "tsc": "tsc",
-    "tsc:init": "tsc --init"
+    "tsc:init": "tsc --init",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",

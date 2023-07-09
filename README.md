@@ -38,7 +38,7 @@ Install the package:
 npm i @logtracing/node
 ```
 
-Create a `.env` file and add the following properties with your own informtion, replace `[ENV]` with your environment (`DEV`, `TEST`, or `PROD`):
+Create a `.env` file and add the following properties with your own information, replace `[ENV]` with your environment (`DEV`, `TEST`, or `PROD`):
 ```properties
 MYSQL_USERNAME_[ENV]=
 MYSQL_PASSWORD_[ENV]=
@@ -119,7 +119,7 @@ docker compose up
 
 Then, when the container is up, you can execute the migrations by running:
 ```bash
-npm run migrate:dev
+npm run db:migrate
 ```
 
 ### Getting the code
