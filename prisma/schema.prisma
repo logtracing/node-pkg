@@ -125,6 +125,7 @@ model ExecutionArgument {
   executionDetailsId  Int @map("execution_details_id")
 }
 
+// Migrated
 model EnvironmentDetails {
   @@map("environment_details")
   id                Int @id @default(autoincrement())

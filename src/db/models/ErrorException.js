@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       ErrorException.hasMany(models.EnvironmentDetails, {
         as: 'EnvironmentDetails',
       });
+
+      ErrorException.hasMany(models.ExtraDetails, {
+        as: 'ExtraDetails',
+      });
     }
   }
   ErrorException.init(

@@ -15,12 +15,13 @@ import {
 
 import { // @ts-ignore
   CodeLine, // @ts-ignore
-  Log, // @ts-ignore
-  LogGroup, // @ts-ignore
   EnvironmentDetails, // @ts-ignore
   ErrorException, // @ts-ignore
   ExecutionArguments, // @ts-ignore
   ExecutionDetails, // @ts-ignore
+  ExtraDetails, // @ts-ignore
+  Log, // @ts-ignore
+  LogGroup, // @ts-ignore
   Stack, // @ts-ignore
   SystemDetails,
 } from './db/models/index';
@@ -255,17 +256,6 @@ export default class Logger {
   }
 
   private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
-    /*
-    const extraDetailsData = [];
-    for (const extraKey in this.extraVars) {
-      extraDetailsData.push({
-        name: extraKey,
-        value: this.extraVars[extraKey],
-        isJson: this.isJson(this.extraVars[extraKey])
-      });
-    }
-    */
-
     try {
       // general error exception
       const generalInfo = this.errStack[0];
@@ -348,6 +338,22 @@ export default class Logger {
         });
       }
       await EnvironmentDetails.bulkCreate(environmentDetailsData);
+
+      // extra details
+      if (Object.keys(this.extraVars).length) {
+        const extraDetailsData = [];
+        for (const extraKey in this.extraVars) {
+          console.log(this.isJson(this.extraVars[extraKey]))
+          extraDetailsData.push({
+            name: extraKey,
+            value: this.extraVars[extraKey],
+            isJson: this.isJson(this.extraVars[extraKey]),
+            errorExceptionId: errorException.id,
+          });
+        }
+
+        await ExtraDetails.bulkCreate(extraDetailsData);
+      }
 
       return errorException;
     } catch (err) {
