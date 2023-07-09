@@ -41,8 +41,6 @@ export default class Logger {
   private envVars: NodeJS.ProcessEnv | null;
   private extraVars: ExtraVars;
 
-  private prisma: any;
-
   constructor(flow: string) {
     if (!flow) {
       throw new Error('Flow argument is missing');
