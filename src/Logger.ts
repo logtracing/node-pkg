@@ -17,6 +17,7 @@ import { // @ts-ignore
   CodeLine, // @ts-ignore
   Log, // @ts-ignore
   LogGroup, // @ts-ignore
+  EnvironmentDetails, // @ts-ignore
   ErrorException, // @ts-ignore
   ExecutionArguments, // @ts-ignore
   ExecutionDetails, // @ts-ignore
@@ -255,14 +256,6 @@ export default class Logger {
 
   private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     /*
-    const environmentDetailsData = [];
-    for (const varKey in this.envVars) {
-      environmentDetailsData.push({
-        name: varKey,
-        value: this.envVars[varKey]
-      });
-    }
-
     const extraDetailsData = [];
     for (const extraKey in this.extraVars) {
       extraDetailsData.push({
@@ -344,6 +337,17 @@ export default class Logger {
         });
       }
       await ExecutionArguments.bulkCreate(executionArgumentData);
+
+      // environment details
+      const environmentDetailsData = [];
+      for (const varKey in this.envVars) {
+        environmentDetailsData.push({
+          name: varKey,
+          value: this.envVars[varKey],
+          errorExceptionId: errorException.id,
+        });
+      }
+      await EnvironmentDetails.bulkCreate(environmentDetailsData);
 
       return errorException;
     } catch (err) {
