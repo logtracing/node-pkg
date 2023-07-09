@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import {
-  CodeLine,
+  CodeLine as CodeLineType,
   ErrorException as ErrorExceptionType,
   ErrorStack,
   ExtraValue,
@@ -12,8 +12,14 @@ import {
   ReportOptions,
   SimpleLog,
 } from './types';
-// @ts-ignore
-import { Log, LogGroup, ErrorException } from './db/models/index';
+
+import { // @ts-ignore
+  CodeLine, // @ts-ignore
+  Log, // @ts-ignore
+  LogGroup, // @ts-ignore
+  ErrorException, // @ts-ignore
+  Stack,
+} from './db/models/index';
 
 
 export default class Logger {
@@ -162,8 +168,8 @@ export default class Logger {
     }
   }
 
-  private readLinesSync(filePath: string, start: number, end: number): CodeLine[] {
-    const lines: CodeLine[] = [];
+  private readLinesSync(filePath: string, start: number, end: number): CodeLineType[] {
+    const lines: CodeLineType[] = [];
     const fileContent = fs.readFileSync(filePath, 'utf-8').split('\n');
 
     for (let i = start - 1; i < end - 1; i++) {
@@ -185,11 +191,11 @@ export default class Logger {
       return stack.map((callSite): ErrorStack => {
         const lineNumber: number = callSite.getLineNumber() ?? 0;
         const fileName: string = callSite.getFileName() ?? '';
-        let code: CodeLine[] = [];
+        let code: CodeLineType[] = [];
 
         if (fileName && !fileName.startsWith('node')) {
           code = this.readLinesSync(fileName, lineNumber - this.codeLinesLimit, lineNumber + this.codeLinesLimit)
-            .map((line: CodeLine) => {
+            .map((line: CodeLineType) => {
               return {
                 ...line,
                 currentLine: lineNumber,
@@ -245,29 +251,6 @@ export default class Logger {
 
   private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     /*
-    const stackData = [];
-    for (const stack of this.errStack as ErrorStack[]) {
-      const codeLinesData = [];
-
-      for (const line of stack.code) {
-        codeLinesData.push({
-          line: line.line,
-          content: line.content ?? '',
-          isErrorLine: line.currentLine === line.line,
-        });
-      }
-
-      stackData.push({
-        file: stack.fileName,
-        function: stack.functionName,
-        line: stack.lineNumber,
-        column: stack.columnNumber,
-        code: {
-          create: codeLinesData,
-        },
-      });
-    };
-
     const systemDetailsData = {
       arch: this.osVars?.arch,
       processor: this.osVars?.cpus[0].model,
@@ -310,57 +293,10 @@ export default class Logger {
         isJson: this.isJson(this.extraVars[extraKey])
       });
     }
+    */
 
     try {
-      const generalInfo = this.errStack[0];
-
-      const errorDB: any = {
-        data: {
-          flow: this.flow,
-          package: 'Node.js',
-          name: generalInfo.errorName,
-          message: generalInfo.errorMessage,
-          stackStr: generalInfo.errorStack,
-          stack: {
-            create: stackData,
-          },
-          systemDetails: {
-            create: systemDetailsData,
-          },
-          executionDetails: {
-            create: executionDetailsData,
-          },
-          environmentDetails: {
-            create: environmentDetailsData,
-          },
-        }
-      }
-
-      if (extraDetailsData.length) {
-        errorDB.data.extraDetails = {
-          create: extraDetailsData,
-        };
-      }
-
-      if (opts && opts.group) {
-        errorDB.data.logGroup = {
-          connect: { id: opts.group.id },
-        };
-      }
-
-      // @ts-ignore
-      const createdError = await this.prisma.errorException.create(errorDB);
-      await this.prisma.$disconnect();
-
-      return createdError;
-    } catch (err) {
-      console.error(err);
-
-      await this.prisma.$disconnect();
-      return null;
-    }*/
-
-    try {
+      // general error exception
       const generalInfo = this.errStack[0];
 
       const errorExceptionData: ErrorExceptionType = {
@@ -375,7 +311,32 @@ export default class Logger {
         errorExceptionData.logGroupId = opts.group.id;
       }
 
-      return await ErrorException.create(errorExceptionData);
+      const errorException: ErrorException = await ErrorException.create(errorExceptionData);
+
+      // stack information
+      for (const stack of this.errStack as ErrorStack[]) {
+        const stackData = {
+          file: stack.fileName,
+          function: stack.functionName,
+          line: stack.lineNumber,
+          column: stack.columnNumber,
+          errorExceptionId: errorException.id,
+        };
+        const stackInstance = await Stack.create(stackData);
+
+        const codeLinesData = [];
+        for (const line of stack.code) {
+          codeLinesData.push({
+            line: line.line,
+            content: line.content ?? '',
+            isErrorLine: line.currentLine === line.line,
+            stackId: stackInstance.id,
+          });
+        }
+        await CodeLine.bulkCreate(codeLinesData);
+      };
+
+      return errorException;
     } catch (err) {
       console.error(err);
 

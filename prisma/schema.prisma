@@ -65,6 +65,7 @@ model ErrorException {
   updatedAt           DateTime @updatedAt @map("updated_at")
 }
 
+// Migrated
 model Stack {
   @@map("stack")
   id                Int @id @default(autoincrement())
@@ -77,6 +78,7 @@ model Stack {
   errorExceptionId  Int @map("error_exception_id")
 }
 
+// Migrated
 model CodeLine {
   @@map("stack_code_lines")
   id          Int @id @default(autoincrement())

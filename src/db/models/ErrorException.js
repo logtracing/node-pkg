@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'logGroupId',
         as: 'LogGroup',
       });
+
+      ErrorException.hasMany(models.Stack, {
+        as: 'Stack',
+      });
     }
   }
   ErrorException.init(
