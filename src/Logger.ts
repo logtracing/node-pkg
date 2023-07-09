@@ -18,6 +18,8 @@ import { // @ts-ignore
   Log, // @ts-ignore
   LogGroup, // @ts-ignore
   ErrorException, // @ts-ignore
+  ExecutionArguments, // @ts-ignore
+  ExecutionDetails, // @ts-ignore
   Stack, // @ts-ignore
   SystemDetails,
 } from './db/models/index';
@@ -25,6 +27,7 @@ import { // @ts-ignore
 
 export default class Logger {
   public static PACKAGE: string = 'NODE.JS';
+  public static LANGUAGE: string = 'node.js';
 
   private readonly _flow: string;
   private readonly prepareStackTrace: PrepareStackTrace;
@@ -252,22 +255,6 @@ export default class Logger {
 
   private async store(opts: ReportOptions | null = null): Promise<ErrorException | null> {
     /*
-    const executionArgumentData = [];
-    for (const argument of this.nodeVars!.args) {
-      executionArgumentData.push({
-        argument: argument
-      });
-    }
-
-    const executionDetailsData = {
-      language: 'NodeJS',
-      version: this.nodeVars?.version,
-      executionFinishTime: new Date(this.nodeVars!.datetime * 1000),
-      arguments: {
-        create: executionArgumentData,
-      },
-    };
-
     const environmentDetailsData = [];
     for (const varKey in this.envVars) {
       environmentDetailsData.push({
@@ -339,6 +326,24 @@ export default class Logger {
         errorExceptionId: errorException.id,
       };
       await SystemDetails.create(systemDetailsData);
+
+      // execution details
+      const executionDetailsData = {
+        language: Logger.LANGUAGE,
+        version: this.nodeVars?.version,
+        executionFinishTime: new Date(this.nodeVars!.datetime * 1000),
+        errorExceptionId: errorException.id,
+      };
+      const executionDetailsInstance = await ExecutionDetails.create(executionDetailsData);
+
+      const executionArgumentData = [];
+      for (const argument of this.nodeVars!.args) {
+        executionArgumentData.push({
+          argument: argument,
+          executionDetailsId: executionDetailsInstance.id,
+        });
+      }
+      await ExecutionArguments.bulkCreate(executionArgumentData);
 
       return errorException;
     } catch (err) {

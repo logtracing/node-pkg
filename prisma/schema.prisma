@@ -103,6 +103,8 @@ model SystemDetails {
   errorException    ErrorException @relation(fields: [errorExceptionId], references: [id])
   errorExceptionId  Int @unique @map("error_exception_id")
 }
+
+// Migrated
 model ExecutionDetails {
   @@map("execution_details")
   id                  Int @id @default(autoincrement())
@@ -114,6 +116,7 @@ model ExecutionDetails {
   errorExceptionId    Int @unique @map("error_exception_id")
 }
 
+// Migrated
 model ExecutionArgument {
   @@map("execution_arguments")
   id                  Int @id @default(autoincrement())
