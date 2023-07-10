@@ -8,7 +8,7 @@
  *    node dist/examples/storing_extra_vars.js
  */
 
-import { Logger } from '../src/index';
+import { ExceptionLogger } from '../src/index';
 
 // Functions to have a deeper stack
 const foo = () => {
@@ -25,7 +25,7 @@ const baz = () => {
 
 // Main function
 const main = async () => {
-  const logger = new Logger('Storing Extra Vars');
+  const logger = new ExceptionLogger('Storing Extra Vars');
 
   try {
     logger.addExtra('Extra Section', 'This is a simple string');

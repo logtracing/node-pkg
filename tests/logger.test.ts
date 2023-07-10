@@ -1,5 +1,5 @@
 import { expect, describe, test } from '@jest/globals';
-import Logger from '../src/Logger';
+import Logger from '../src/ExceptionLogger';
 
 describe('Testing basic logging operations', () => {
   test('Create a simple instance for a Testing flow', () => {
