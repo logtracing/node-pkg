@@ -8,8 +8,7 @@
  *    node dist/examples/grouping_errors.js
  */
 
-import { group } from 'console';
-import { Logger } from '../src/index';
+import { ExceptionLogger } from '../src/index';
 
 // Functions to have a deeper stack
 const foo = () => {
@@ -26,7 +25,7 @@ const baz = () => {
 
 // Main function
 const main = async () => {
-  const logger = new Logger('Grouping Errors');
+  const logger = new ExceptionLogger('Grouping Errors');
 
   try {
     baz();

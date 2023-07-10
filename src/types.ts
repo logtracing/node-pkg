@@ -1,14 +1,18 @@
-import { LogGroup } from '@prisma/client';
-
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
-export interface CodeLine {
+// General types
+export interface LoggerOptions {
+  group: any,
+};
+
+// Error Exception Entities Types
+export interface CodeLineData {
   line: number;
   content: string;
   currentLine?: number;
 };
 
-export interface ErrorStack {
+export interface ErrorStackData {
   errorName: string,
   errorMessage: string,
   errorStack: string,
@@ -16,16 +20,16 @@ export interface ErrorStack {
   fileName: string,
   lineNumber: number,
   columnNumber: number,
-  code: CodeLine[],
+  code: CodeLineData[],
 };
 
-export interface OsUser {
+export interface OsUserData {
   username: string;
   uid: number;
   gid: number;
 };
 
-export interface OsCpuTime {
+export interface OsCpuTimeData {
   user: number;
   nice: number;
   sys: number;
@@ -33,23 +37,23 @@ export interface OsCpuTime {
   irq: number;
 };
 
-export interface OsCpu {
+export interface OsCpuData {
   model: string;
   speed: number;
-  times: OsCpuTime;
+  times: OsCpuTimeData;
 };
 
-export interface OsVars {
+export interface OsVarsData {
   arch: string;
-  cpus: OsCpu[];
+  cpus: OsCpuData[];
   hostname: string;
   platform: string;
   release: string;
   version: string;
-  user: OsUser;
+  user: OsUserData;
 };
 
-export interface NodeVars {
+export interface NodeVarsData {
   version: string;
   args: string[],
   datetime: number;
@@ -57,10 +61,88 @@ export interface NodeVars {
 
 export type ExtraValue = object | string;
 
-export interface ExtraVars {
+export interface ExtraVarsData {
   [identifier: string]: string;
 };
 
-export interface ReportOptions {
-  group: LogGroup,
-};
+// Logger Types
+export enum LogType {
+  TRACE = 'TRACE',
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+  FATAL = 'FATAL',
+}
+
+// Model Data Types
+export interface LogModelData {
+  level: string,
+  flow: string,
+  content: string,
+  logGroupId?: number,
+  createdAt?: Date,
+  updatedAt?: Date,
+}
+
+export interface ErrorExceptionModelData {
+  package: string,
+  flow: string,
+  name: string,
+  message: string,
+  stackStr: string,
+  logGroupId?: number,
+  createdAt?: Date,
+  updatedAt?: Date,
+}
+
+export interface StackModelData {
+  file: string,
+  function: string,
+  line: number,
+  column: number,
+  errorExceptionId: number,
+}
+
+export interface CodeLineModelData {
+    line: number,
+    content: string,
+    isErrorLine: boolean,
+    stackId: number,
+}
+
+export interface SystemDetailsModelData {
+  arch: string,
+  processor: string,
+  hostname: string,
+  platform: string,
+  platformRelease: string,
+  platformVersion: string,
+  user: string,
+  errorExceptionId: number,
+}
+
+export interface ExecutionDetailsModelData {
+  language: string,
+  version: string,
+  executionFinishTime: Date,
+  errorExceptionId: number,
+}
+
+export interface ExecutionArgumentModelData {
+  argument: string,
+  executionDetailsId: number,
+}
+
+export interface EnvironmentDetailsModelData {
+  name: string,
+  value: string,
+  errorExceptionId: number,
+}
+
+export interface ExtraDetailsModelData {
+  name: string,
+  value: string,
+  isJson: boolean,
+  errorExceptionId: number,
+}

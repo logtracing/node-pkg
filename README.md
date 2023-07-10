@@ -11,69 +11,72 @@
 </p>
 
 ## Overview
-**Logtracing** is a suite that allows you to track errors that occur in your applications. It also allows you to have full control of how and where to store all the collected information, this means that you need to have your own database where all the information will be stored.
+**Logtracing** is a suite that allows you to write logs and track errors that occur in your applications. It also allows you to have full control of how and where to store all the collected information, this means that you need to have your own database where all the information will be stored.
 
-Also, **Logtracing** provides a dashboard to monitoring your errors, but you can use or create your own monitoring dashboard.
+Also, **Logtracing** provides a dashboard for monitoring your errors (WIP), but you can use or create your own monitoring dashboard.
 
 Right now is available for the following tech stacks:
 - JavaScript (NodeJS)
 - Python (In Progress)
 
-**What information does this suite track?**
-- Error Stack
-- Code lines of each function
-- Environment variables
-- SO Information
-
-## :wrench: Configuration
+## :book: Usage
 
 ### :open_file_folder: Creating your database
-Before start using this suite, you need to have a MySQL database ready to be used (locally or in a server) and create the required tables.
+Before start using this suite, you need to have a MySQL database ready to be used (locally or on a server) and create the required tables.
 
-You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/prisma/migrations/20230707220433_init/migration.sql)
+You can find the migration SQL file here: [SQL for tables](https://github.com/logtracing/node-pkg/blob/main/database.sql)
 
-### :rocket: Usage
+### :wrench: Initial configuration
 Install the package:
 ```bash
 npm i @logtracing/node
 ```
 
-Create a `.env` file and add the `DATABASE_URL` value and replace the required information:
+Create a `.env` file and add the following properties with your own information, replace `[ENV]` with your environment (`DEV`, `TEST`, or `PROD`):
 ```properties
-# MySQL
-DATABASE_URL='mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<YOUR_DATABASE>'
+MYSQL_USERNAME_[ENV]=
+MYSQL_PASSWORD_[ENV]=
+MYSQL_DATABASE_[ENV]=
+MYSQL_HOST_[ENV]=
+MYSQL_PORT_[ENV]=
 ```
----
-**IMPORTANT**
-
-Since this package uses [prisma](https://www.prisma.io/) as an ORM, before starting to work, you need to create a prisma client. Simply execute the following command:
-```bash
-npx prisma generate --schema=./node_modules/@logtracing/node/prisma/schema.prisma
-```
----
 
 Load your `.env` file using the [dotenv module](https://www.npmjs.com/package/dotenv) at the very beginning of your code (before other code runs):
 ```js
 require('dotenv').config();
 
 // or
-
 import 'dotenv/config';
 ```
 
 Import it in your code:
 ```js
-const { Logger } = require('@logtracing/node');
+const { ExceptionLogger } = require('@logtracing/node');
 
 // or
-
-import { Logger } from '@logtracing/node';
+import { ExceptionLogger } from '@logtracing/node';
 ```
 
-Start tracking your errors:
+### :rocket: Usage
+#### `Logger`
+You can write your own logs using the `Logger` class:
 ```js
-// Create an instance of Logger with the name or your current flow
-const log = new Logger('Example flow');
+const { Logger } = require('@logtracing/node');
+
+const myLogger = new Logger('MY APP LOGGER');
+
+const trace = await logger.trace('Example of a trace log message');
+const debug = await logger.debug('Example of a debug log message');
+const info = await logger.info('Example of an info log message');
+const warn = await logger.warn('Example of a warn log message');
+const error = await logger.error('Example of an error log message');
+const fatal = await logger.fatal('Example of a fatal log message');
+```
+
+#### `ExceptionLogger`
+You can also track the exceptions in your code, to have a big picture of what happened when your application fails. Start tracking your errors:
+```js
+const exLogger = new ExceptionLogger('MY APP EXCEPTION LOGGER');
 
 const user = {
   username: 'admin',
@@ -89,17 +92,17 @@ const bar = (): void => {
 };
 
 // You can add extra information that could be useful to understand the error
-log.addExtra('User information', {
+exLogger.addExtra('User information', {
   user: user,
 });
 
 try {
   bar();
 } catch (err) {
-  log.addExtra('More information', 'Handled Error Message');
+  exLogger.addExtra('More information', 'Handled Error Message');
 
   // Start to track the error
-  log.trackError(err).then(() => {
+  exLogger.trackError(err).then(() => {
   
     // When finish, call report() to send all the information to your DB
     log.report();
@@ -109,24 +112,9 @@ try {
 
 :zap: **After doing this, you'll have in your configured database all the information related to the error that you tracked.**
 
-
 ❕You'll find more examples in [this folder](https://github.com/logtracing/node-pkg/blob/main/examples).
 
-
 ## :arrow_down: Installation for development purposes
-### Configuring MySQL
-This project uses `mysql` as a database provider, so it is important to have a database before start making changes.
-
-We have a `docker-compose.yml` file that provides you with a database ready to use, you just need to execute:
-```bash
-docker compose up
-```
-
-Then, when the container is up, you can execute the migrations by running:
-```bash
-npm run migrate:dev
-```
-
 ### Getting the code
 Clone this project:
 ```bash
@@ -154,6 +142,19 @@ npm run build
 Run the tests:
 ```bash
 npm run test
+```
+
+### Configuring MySQL
+This project uses `mysql` as a database provider, so it is important to have a database before start making changes.
+
+We have a `docker-compose.yml` file that provides you with a database ready to use, you just need to execute:
+```bash
+docker compose up
+```
+
+Then, when the container is up, you can execute the migrations by running:
+```bash
+npm run db:migrate
 ```
 
 ## :scroll: Licence

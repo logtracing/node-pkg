@@ -8,7 +8,7 @@
  *    node dist/examples/basic_usage.js
  */
 
-import { Logger } from '../src/index';
+import { ExceptionLogger } from '../src/index';
 
 // Functions to have a deeper stack
 const foo = () => {
@@ -25,7 +25,7 @@ const baz = () => {
 
 // Main function
 const main = async () => {
-  const logger = new Logger('Basic Usage');
+  const logger = new ExceptionLogger('Basic Usage');
 
   try {
     baz();
