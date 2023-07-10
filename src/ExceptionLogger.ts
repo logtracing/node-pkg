@@ -251,7 +251,7 @@ export default class Logger extends AbstractLogger {
       for (const argument of this.nodeVars!.args) {
         executionArgumentData.push({
           argument: argument,
-          executionDetailsId: new Date(),
+          executionDetailsId: executionDetailsInstance.id,
         });
       }
       await ExecutionArguments.bulkCreate(executionArgumentData, {
