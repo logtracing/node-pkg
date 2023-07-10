@@ -1,5 +1,5 @@
 import { sequelize } from './db/models/index';
-import { ReportOptions, SimpleLog, LogType } from './types';
+import { LoggerOptions, LogModelData, LogType } from './types';
 // @ts-ignore
 import { Log } from './db/models/index';
 import AbstractLogger from './AbstractLogger';
@@ -9,7 +9,7 @@ export default class Logger extends AbstractLogger {
     super(flow);
   }
 
-  public async trace(content: string, opts: ReportOptions | null = null): Promise<Log | null> {
+  public async trace(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.TRACE, content, opts);
     } catch (err) {
@@ -17,7 +17,7 @@ export default class Logger extends AbstractLogger {
     }
   }
   
-  public async debug(content: string, opts: ReportOptions | null = null): Promise<any | null> {
+  public async debug(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.DEBUG, content, opts);
     } catch (err) {
@@ -25,7 +25,7 @@ export default class Logger extends AbstractLogger {
     }
   }
 
-  public async info(content: string, opts: ReportOptions | null = null): Promise<any | null> {
+  public async info(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.INFO, content, opts);
     } catch (err) {
@@ -33,7 +33,7 @@ export default class Logger extends AbstractLogger {
     }
   }
 
-  public async warn(content: string, opts: ReportOptions | null = null): Promise<any | null> {
+  public async warn(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.WARN, content, opts);
     } catch (err) {
@@ -41,7 +41,7 @@ export default class Logger extends AbstractLogger {
     }
   }
 
-  public async error(content: string, opts: ReportOptions | null = null): Promise<any | null> {
+  public async error(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.ERROR, content, opts);
     } catch (err) {
@@ -49,7 +49,7 @@ export default class Logger extends AbstractLogger {
     }
   }
 
-  public async fatal(content: string, opts: ReportOptions | null = null): Promise<any | null> {
+  public async fatal(content: string, opts: LoggerOptions | null = null): Promise<Log> {
     try {
       return await this.save(LogType.FATAL, content, opts);
     } catch (err) {
@@ -57,11 +57,11 @@ export default class Logger extends AbstractLogger {
     }
   }
 
-  private async save(level: string, content: string, opts: ReportOptions | null): Promise<Log | null> {
+  private async save(level: string, content: string, opts: LoggerOptions | null): Promise<Log> {
     const t = await sequelize.transaction();
     
     try {
-      const data: SimpleLog = {
+      const data: LogModelData = {
           level,
           flow: this.flow,
           content,
