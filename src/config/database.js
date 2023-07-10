@@ -24,5 +24,6 @@ module.exports = {
     host: process.env.MYSQL_HOST_PROD,
     port: process.env.MYSQL_PORT_PROD,
     dialect: 'mysql',
+    logging: false,
   },
 };
