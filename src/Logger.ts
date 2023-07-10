@@ -12,7 +12,6 @@ import {
   ReportOptions,
   SimpleLog,
 } from './types';
-
 import { // @ts-ignore
   CodeLine, // @ts-ignore
   EnvironmentDetails, // @ts-ignore
@@ -25,6 +24,7 @@ import { // @ts-ignore
   Stack, // @ts-ignore
   SystemDetails,
 } from './db/models/index';
+import Database from './db/Database';
 
 
 export default class Logger {
@@ -34,6 +34,7 @@ export default class Logger {
   private readonly _flow: string;
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
+  private readonly db: Database;
 
   private errStack: ErrorStack[];
   private osVars: OsVars | null;
@@ -54,6 +55,7 @@ export default class Logger {
     this.envVars = null;
     this.extraVars = {};
     this.codeLinesLimit = 5;
+    this.db = new Database();
   }
 
   public get flow(): string {
@@ -155,21 +157,17 @@ export default class Logger {
   }
 
   private async log(level: string, content: string, opts: ReportOptions | null): Promise<Log | null> {
-    try {
-      const data: SimpleLog = {
-          level,
-          flow: this.flow,
-          content,
-      };
+    const data: SimpleLog = {
+        level,
+        flow: this.flow,
+        content,
+    };
 
-      if (opts && opts.group) {
-        data.logGroupId = opts.group.id;
-      }
-
-      return await Log.create(data);
-    } catch (err) {
-      console.error(err);
+    if (opts && opts.group) {
+      data.logGroupId = opts.group.id;
     }
+
+    return this.db.saveLog(data);
   }
 
   private readLinesSync(filePath: string, start: number, end: number): CodeLineType[] {
