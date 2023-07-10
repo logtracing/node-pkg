@@ -25,7 +25,6 @@ import { // @ts-ignore
 } from './db/models/index';
 import AbstractLogger from './AbstractLogger';
 
-
 export default class Logger extends AbstractLogger {
   public static PACKAGE: string = 'NODE.JS';
   public static LANGUAGE: string = 'node.js';

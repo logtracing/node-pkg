@@ -58,17 +58,17 @@ import 'dotenv/config';
 
 Import it in your code:
 ```js
-const { Logger } = require('@logtracing/node');
+const { ExceptionLogger } = require('@logtracing/node');
 
 // or
 
-import { Logger } from '@logtracing/node';
+import { ExceptionLogger } from '@logtracing/node';
 ```
 
 Start tracking your errors:
 ```js
-// Create an instance of Logger with the name or your current flow
-const log = new Logger('Example flow');
+// Create an instance of ExceptionLogger with the name or your current flow
+const log = new ExceptionLogger('Example flow');
 
 const user = {
   username: 'admin',
