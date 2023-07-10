@@ -190,7 +190,9 @@ export default class Logger extends AbstractLogger {
         errorExceptionData.logGroupId = opts.group.id;
       }
 
-      const errorException: ErrorException = await ErrorException.create(errorExceptionData);
+      const errorException: ErrorException = await ErrorException.create(errorExceptionData, {
+        transaction: t,
+      });
 
       // stack information
       for (const stack of this.errStack as ErrorStack[]) {
@@ -201,7 +203,9 @@ export default class Logger extends AbstractLogger {
           column: stack.columnNumber,
           errorExceptionId: errorException.id,
         };
-        const stackInstance = await Stack.create(stackData);
+        const stackInstance = await Stack.create(stackData, {
+          transaction: t,
+        });
 
         const codeLinesData = [];
         for (const line of stack.code) {
@@ -212,7 +216,9 @@ export default class Logger extends AbstractLogger {
             stackId: stackInstance.id,
           });
         }
-        await CodeLine.bulkCreate(codeLinesData);
+        await CodeLine.bulkCreate(codeLinesData, {
+          transaction: t,
+        });
       };
 
       // system details
@@ -226,7 +232,9 @@ export default class Logger extends AbstractLogger {
         user: this.osVars?.user.username,
         errorExceptionId: errorException.id,
       };
-      await SystemDetails.create(systemDetailsData);
+      await SystemDetails.create(systemDetailsData, {
+        transaction: t,
+      });
 
       // execution details
       const executionDetailsData = {
@@ -235,16 +243,20 @@ export default class Logger extends AbstractLogger {
         executionFinishTime: new Date(this.nodeVars!.datetime * 1000),
         errorExceptionId: errorException.id,
       };
-      const executionDetailsInstance = await ExecutionDetails.create(executionDetailsData);
+      const executionDetailsInstance = await ExecutionDetails.create(executionDetailsData, {
+        transaction: t,
+      });
 
       const executionArgumentData = [];
       for (const argument of this.nodeVars!.args) {
         executionArgumentData.push({
           argument: argument,
-          executionDetailsId: executionDetailsInstance.id,
+          executionDetailsId: new Date(),
         });
       }
-      await ExecutionArguments.bulkCreate(executionArgumentData);
+      await ExecutionArguments.bulkCreate(executionArgumentData, {
+        transaction: t,
+      });
 
       // environment details
       const environmentDetailsData = [];
@@ -255,13 +267,14 @@ export default class Logger extends AbstractLogger {
           errorExceptionId: errorException.id,
         });
       }
-      await EnvironmentDetails.bulkCreate(environmentDetailsData);
+      await EnvironmentDetails.bulkCreate(environmentDetailsData, {
+        transaction: t,
+      });
 
       // extra details
       if (Object.keys(this.extraVars).length) {
         const extraDetailsData = [];
         for (const extraKey in this.extraVars) {
-          console.log(this.isJson(this.extraVars[extraKey]))
           extraDetailsData.push({
             name: extraKey,
             value: this.extraVars[extraKey],
@@ -270,7 +283,9 @@ export default class Logger extends AbstractLogger {
           });
         }
 
-        await ExtraDetails.bulkCreate(extraDetailsData);
+        await ExtraDetails.bulkCreate(extraDetailsData, {
+          transaction: t,
+        });
       }
 
       await t.commit();

@@ -71,7 +71,9 @@ export default class Logger extends AbstractLogger {
         data.logGroupId = opts.group.id;
       }
 
-      const log = await Log.create(data);
+      const log = await Log.create(data, {
+        transaction: t,
+      });
       await t.commit();
 
       return log;
