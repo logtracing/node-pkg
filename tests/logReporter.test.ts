@@ -49,6 +49,14 @@ describe('Tests for the LogReporter class and its simple logs', () => {
     expect(logs.every(l => typeof(l) === 'string')).toBe(true);
   });
 
+  test('should return an array of strings that matches with the expected format', async () => {
+    const reporter: LogReporter = new LogReporter(flow);
+    const logs = await reporter.getBasicLogs();
+    const regEx = /\[(TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\s{0,1}\]\[\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}\]:[\w\d\s]*/
+    
+    expect(logs.every(l => regEx.test(l))).toBe(true);
+  });
+
   afterAll(async () => {
     await Log.destroy({
       where: {
