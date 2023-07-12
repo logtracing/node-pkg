@@ -169,3 +169,12 @@ export interface LogReporterOptions {
 export interface LogReporterSegments {
   [identifier: string]: any,
 }
+
+
+export interface LogReporterObject {
+  flow: string,
+  datetime: string,
+  level: LogType,
+  content: string,
+  group?: LogGroup,
+}

@@ -1,4 +1,4 @@
-import { LogReporterOptions, ModelSearchQuery, LogReporterSegments } from './types';
+import { LogReporterOptions, ModelSearchQuery, LogReporterSegments, LogReporterObject } from './types';
 // @ts-ignore
 import { Log, LogGroup } from './db/models/index';
 import { Op } from 'sequelize';
@@ -13,7 +13,7 @@ export default class LogReporter {
     this.flow = flow;
   }
 
-  getBasicLogs(options: LogReporterOptions = {}) {
+  getBasicLogs(options: LogReporterOptions = {}): Promise<string[]> {
     return new Promise((resolve, reject) => {
       const query: ModelSearchQuery = {
         limit: options.limit ?? LogReporter.DEFAULT_LIMIT,
@@ -64,7 +64,7 @@ export default class LogReporter {
     });
   }
 
-  getLogs(options: LogReporterOptions = {}) {
+  getLogs(options: LogReporterOptions = {}): Promise<LogReporterObject[]> {
     return new Promise((resolve, reject) => {
       const query: ModelSearchQuery = {
         limit: options.limit ?? LogReporter.DEFAULT_LIMIT,
