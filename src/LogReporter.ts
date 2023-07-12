@@ -1,4 +1,4 @@
-import { LogReporterOptions, ModelSearchQuery } from './types';
+import { LogReporterOptions, ModelSearchQuery, LogReporterSegments } from './types';
 // @ts-ignore
 import { Log, LogGroup } from './db/models/index';
 import { Op } from 'sequelize';
@@ -51,7 +51,15 @@ export default class LogReporter {
       }
 
       Log.findAll(query)
-        .then((data: any) => resolve(data.map((log: Log) => this.format(log))))
+        .then((data: any) => resolve(
+          data.map((log: Log) => {
+            const segments = {
+              group: options.groupName ?? null,
+            };
+
+            return this.format(log, segments);
+          })
+        ))
         .catch((err: any) => reject(err));
     });
   }
@@ -105,13 +113,19 @@ export default class LogReporter {
     });
   }
 
-  private format(log: Log, options: object = {}): string {
-    const segments: string[] = [
+  private format(log: Log, segments: LogReporterSegments = {}): string {
+    const newSegments: string[] = [
       `[${log.level.padEnd(5)}]`,
       `[${this.formatDate(log.createdAt)}]`,
     ];
 
-    return `${segments.join('')}: ${log.content}`;
+    for (const segment in segments) {
+      if (segments[segment]) {
+        newSegments.push(`[${segments[segment]}]`);
+      }
+    }
+
+    return `${newSegments.join('')}: ${log.content}`;
   }
 
   private formatDate(date: Date): string {

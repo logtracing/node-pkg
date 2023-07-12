@@ -165,3 +165,7 @@ export interface LogReporterOptions {
   level?: LogType,
   groupName?: LogGroup
 }
+
+export interface LogReporterSegments {
+  [identifier: string]: any,
+}
