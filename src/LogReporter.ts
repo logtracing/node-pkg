@@ -106,7 +106,7 @@ export default class LogReporter {
             datetime: this.formatDate(log.createdAt),
             level: log.level,
             content: log.content,
-            group: log.LogGroup ? log.LogGroup.name : null
+            group: log.LogGroup ? log.LogGroup.name : null,
           };
         })))
         .catch((err: any) => reject(err));

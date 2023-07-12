@@ -170,7 +170,6 @@ export interface LogReporterSegments {
   [identifier: string]: any,
 }
 
-
 export interface LogReporterObject {
   flow: string,
   datetime: string,
