@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 module.exports = {
   development: {
@@ -10,12 +11,9 @@ module.exports = {
     dialect: 'mysql',
   },
   test: {
-    username: process.env.MYSQL_USERNAME_TEST,
-    password: process.env.MYSQL_PASSWORD_TEST,
-    database: process.env.MYSQL_DATABASE_TEST,
-    host: process.env.MYSQL_HOST_TEST,
-    port: process.env.MYSQL_PORT_TEST,
-    dialect: 'mysql',
+    dialect: 'sqlite',
+    storage: path.join(path.resolve(__dirname), '../../test_database.db'),
+    logging: false,
   },
   production: {
     username: process.env.MYSQL_USERNAME_PROD,

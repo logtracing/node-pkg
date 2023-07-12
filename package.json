@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "db:migrate": "sequelize-cli db:migrate",
-    "test": "jest",
+    "test": "NODE_ENV=test sequelize-cli db:migrate && jest",
     "tsc:init": "tsc --init",
     "tsc": "tsc"
   },

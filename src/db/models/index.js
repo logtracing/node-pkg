@@ -7,10 +7,15 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../config/database.js')[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+let sequelize;
+if (env === 'test') {
+  sequelize = new Sequelize(config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 
-fs
-  .readdirSync(__dirname)
+
+fs.readdirSync(__dirname)
   .filter(file => {
     return (
       file.indexOf('.') !== 0 &&
