@@ -3,7 +3,7 @@ import { Logger, LogType } from '../src/index';
 // @ts-ignore
 import { Log } from '../src/db/models/index';
 
-describe('Testing Logger operations', () => {
+describe('Tests for the Logger class', () => {
   let flow: string;
   let group: string;
   let content: string;
@@ -14,7 +14,7 @@ describe('Testing Logger operations', () => {
     content = `${Date.now()}-content`;
   });
 
-  test('Write a simple trace log', async () => {
+  test('should write a trace log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.trace(content);
 
@@ -30,7 +30,7 @@ describe('Testing Logger operations', () => {
     expect(savedLog.content).toBe(content);
   });
 
-  test('Write a simple debug log', async () => {
+  test('should write a debug log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.debug(content);
 
@@ -46,7 +46,7 @@ describe('Testing Logger operations', () => {
     expect(savedLog.content).toBe(content);
   });
 
-  test('Write a simple info log', async () => {
+  test('should write an info log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.info(content);
 
@@ -62,7 +62,7 @@ describe('Testing Logger operations', () => {
     expect(savedLog.content).toBe(content);
   });
 
-  test('Write a simple warn log', async () => {
+  test('should write a warn log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.warn(content);
 
@@ -78,7 +78,7 @@ describe('Testing Logger operations', () => {
     expect(savedLog.content).toBe(content);
   });
 
-  test('Write a simple error log', async () => {
+  test('should write an error log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.error(content);
 
@@ -94,7 +94,7 @@ describe('Testing Logger operations', () => {
     expect(savedLog.content).toBe(content);
   });
 
-  test('Write a simple fatal log', async () => {
+  test('should write a fatal log', async () => {
     const logger: Logger = new Logger(flow);
     await logger.fatal(content);
 

@@ -3,7 +3,7 @@ import { Logger, LogReporter } from '../src/index';
 // @ts-ignore
 import { Log } from '../src/db/models/index';
 
-describe('Tests for the LogReporter and its simple logs', () => {
+describe('Tests for the LogReporter class and its simple logs', () => {
   let flow: string;
   let groupName: string;
   let content: string;
