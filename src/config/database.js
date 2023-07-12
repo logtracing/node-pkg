@@ -12,7 +12,7 @@ module.exports = {
   },
   test: {
     dialect: 'sqlite',
-    storage: path.join(path.resolve(__dirname), '../../test_database.db'),
+    storage: path.join(process.env.PWD, 'test_database.db'),
     logging: false,
   },
   production: {
