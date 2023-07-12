@@ -156,11 +156,12 @@ export interface ModelSearchQuery {
     [identifier: string]: any,
   },
   order?: string[][],
+  include?: object[],
 }
 
 export interface LogReporterOptions {
   limit?: number,
   offset?: number,
   level?: LogType,
-  group?: LogGroup,
+  groupName?: LogGroup
 }

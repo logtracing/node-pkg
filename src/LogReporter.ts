@@ -1,34 +1,106 @@
-import { LogType, LogReporterOptions, ModelSearchQuery } from './types';
+import { LogReporterOptions, ModelSearchQuery } from './types';
 // @ts-ignore
-import { Log } from './db/models/index';
+import { Log, LogGroup } from './db/models/index';
 import { Op } from 'sequelize';
 
 export default class LogReporter {
   private static DEFAULT_LIMIT = 50;
   private static DEFAULT_OFFSET = 0;
 
-  constructor() {}
+  private flow: string;
+
+  constructor(flow: string) {
+    this.flow = flow;
+  }
 
   getBasicLogs(options: LogReporterOptions = {}) {
     return new Promise((resolve, reject) => {
       const query: ModelSearchQuery = {
         limit: options.limit ?? LogReporter.DEFAULT_LIMIT,
         offset:  options.offset ?? LogReporter.DEFAULT_OFFSET,
+        where: {
+          flow: {
+            [Op.eq]: this.flow,
+          }
+        },
         order: [
           ['createdAt', 'DESC'],
         ]
       };
 
       if (options.level) {
-        query.where = {
-          level: {
-            [Op.eq]: options.level,
-          },
+        query.where!.level = {
+          [Op.eq]: options.level,
         };
+      }
+
+      if (options.groupName) {
+        query.where = {
+          ...query.where,
+          ...{
+            '$LogGroup.name$': {
+              [Op.eq]: options.groupName.toLowerCase(),
+            },
+          }
+        };
+
+        query.include = [{
+          model: LogGroup,
+          as: 'LogGroup'
+        }]
       }
 
       Log.findAll(query)
         .then((data: any) => resolve(data.map((log: Log) => this.format(log))))
+        .catch((err: any) => reject(err));
+    });
+  }
+
+  getLogs(options: LogReporterOptions = {}) {
+    return new Promise((resolve, reject) => {
+      const query: ModelSearchQuery = {
+        limit: options.limit ?? LogReporter.DEFAULT_LIMIT,
+        offset:  options.offset ?? LogReporter.DEFAULT_OFFSET,
+        where: {
+          flow: {
+            [Op.eq]: this.flow,
+          }
+        },
+        order: [
+          ['createdAt', 'DESC'],
+        ],
+        include: [
+          { model: LogGroup, as: 'LogGroup' }
+        ],
+      };
+
+      if (options.level) {
+        query.where!.level = {
+          [Op.eq]: options.level,
+        };
+      }
+
+      if (options.groupName) {
+        query.where = {
+          ...query.where,
+          ...{
+            '$LogGroup.name$': {
+              [Op.eq]: options.groupName.toLowerCase(),
+            },
+          }
+        };
+      }
+
+      Log.findAll(query)
+        .then((data: any) => resolve(data.map((log: Log) => {
+          return {
+            flow: this.flow,
+            datetime: this.formatDate(log.createdAt),
+            level: log.level,
+            content: log.content,
+            group: log.LogGroup ? log.LogGroup.name : null
+          };
+        })))
         .catch((err: any) => reject(err));
     });
   }
