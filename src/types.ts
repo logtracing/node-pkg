@@ -152,5 +152,6 @@ export interface ModelSearchQuery {
   offset: number,
   where?: {
     [identifier: string]: any,
-  }
+  },
+  order?: string[][],
 }
