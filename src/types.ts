@@ -146,3 +146,11 @@ export interface ExtraDetailsModelData {
   isJson: boolean,
   errorExceptionId: number,
 }
+
+export interface ModelSearchQuery {
+  limit: number,
+  offset: number,
+  where?: {
+    [identifier: string]: any,
+  }
+}
