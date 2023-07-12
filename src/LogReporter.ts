@@ -1,25 +1,28 @@
-import { LogType, ModelSearchQuery } from './types';
+import { LogType, LogReporterOptions, ModelSearchQuery } from './types';
 // @ts-ignore
 import { Log } from './db/models/index';
 import { Op } from 'sequelize';
 
 export default class LogReporter {
+  private static DEFAULT_LIMIT = 50;
+  private static DEFAULT_OFFSET = 0;
+
   constructor() {}
 
-  getBasicLogs(limit: number = 50, offset: number = 0, level: LogType | null = null) {
+  getBasicLogs(options: LogReporterOptions = {}) {
     return new Promise((resolve, reject) => {
       const query: ModelSearchQuery = {
-        limit,
-        offset,
+        limit: options.limit ?? LogReporter.DEFAULT_LIMIT,
+        offset:  options.offset ?? LogReporter.DEFAULT_OFFSET,
         order: [
           ['createdAt', 'DESC'],
         ]
       };
 
-      if (level) {
+      if (options.level) {
         query.where = {
           level: {
-            [Op.eq]: level,
+            [Op.eq]: options.level,
           },
         };
       }
