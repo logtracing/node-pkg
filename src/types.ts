@@ -1,3 +1,5 @@
+// @ts-ignore
+import { LogGroup } from './db/models/index';
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
 // General types
@@ -145,4 +147,33 @@ export interface ExtraDetailsModelData {
   value: string,
   isJson: boolean,
   errorExceptionId: number,
+}
+
+export interface ModelSearchQuery {
+  limit: number,
+  offset: number,
+  where?: {
+    [identifier: string]: any,
+  },
+  order?: string[][],
+  include?: object[],
+}
+
+export interface LogReporterOptions {
+  limit?: number,
+  offset?: number,
+  level?: LogType,
+  groupName?: LogGroup
+}
+
+export interface LogReporterSegments {
+  [identifier: string]: any,
+}
+
+export interface LogReporterObject {
+  flow: string,
+  datetime: string,
+  level: LogType,
+  content: string,
+  group?: LogGroup,
 }
