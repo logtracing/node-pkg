@@ -2,7 +2,7 @@
   <img width="442" height="90" src="https://github.com/logtracing/node-pkg/assets/55886451/a605b6fd-14c8-4d0d-9cfa-c8f0742aa5ec">
 </p>
 
-<p align="center">NPM Package to track log errors from NodeJS.</p>
+<p align="center">The <strong>LogTracing</strong> Node.js package is a component of the comprehensive <strong>LogTracing</strong> suite, dedicated to facilitating error tracking and log management across various applications.</p>
 
 <p align="center">
   <img src="https://github.com/logtracing/node-pkg/actions/workflows/node.js.yml/badge.svg">
