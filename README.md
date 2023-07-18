@@ -10,15 +10,6 @@
   <img src="https://img.shields.io/npm/l/@logtracing/node?color=blue">
 </p>
 
-## Overview
-**Logtracing** is a suite that allows you to write logs and track errors that occur in your applications. It also allows you to have full control of how and where to store all the collected information, this means that you need to have your own database where all the information will be stored.
-
-Also, **Logtracing** provides a dashboard for monitoring your errors (WIP), but you can use or create your own monitoring dashboard.
-
-Right now is available for the following tech stacks:
-- JavaScript (NodeJS)
-- Python (In Progress)
-
 ## :book: Usage
 
 ### :open_file_folder: Creating your database
