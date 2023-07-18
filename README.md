@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/npm/l/@logtracing/node?color=blue">
 </p>
 
-## :book: Usage
+## :book: Configuration
 
 ### :open_file_folder: Creating your database
 Before start using this suite, you need to have a MySQL database ready to be used (locally or on a server) and create the required tables.
@@ -48,8 +48,8 @@ const { ExceptionLogger } = require('@logtracing/node');
 import { ExceptionLogger } from '@logtracing/node';
 ```
 
-### :rocket: Usage
-#### `Logger`
+## :rocket: Usage
+### `Logger`
 You can write your own logs using the `Logger` class:
 ```js
 const { Logger } = require('@logtracing/node');
@@ -64,7 +64,7 @@ const error = await logger.error('Example of an error log message');
 const fatal = await logger.fatal('Example of a fatal log message');
 ```
 
-#### `ExceptionLogger`
+### `ExceptionLogger`
 You can also track the exceptions in your code, to have a big picture of what happened when your application fails. Start tracking your errors:
 ```js
 const exLogger = new ExceptionLogger('MY APP EXCEPTION LOGGER');
