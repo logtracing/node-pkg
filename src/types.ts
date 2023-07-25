@@ -1,11 +1,27 @@
 // @ts-ignore
 import { LogGroup } from './db/models/index';
+import { ChatPostMessageArguments } from '@slack/web-api';
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
 // General types
+export interface SlackMessageSectionField {
+  type: string,
+  text: string,
+}
+
+export interface SlackMessageSection {
+  type: string,
+  fields: SlackMessageSectionField[]
+}
+
 export interface LoggerOptions {
-  group: any,
+  group?: any,
+  slackMessageExtraSections?: SlackMessageSection[],
 };
+
+export interface GeneralOptions {
+  slackIntegration?: boolean,
+}
 
 // Error Exception Entities Types
 export interface CodeLineData {

@@ -1,6 +1,6 @@
 /**
  * Example of a basic usage of other kind of logs
- * 
+ *
  * To run this example:
  * 1. Transpile the code
  *    npm run build
