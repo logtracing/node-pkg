@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Log.belongsTo(models.LogGroup, {
+      Log.belongsTo(models.LogGroupModel, {
         foreignKey: 'logGroupId',
         as: 'LogGroup',
       });

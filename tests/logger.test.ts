@@ -1,7 +1,7 @@
 import { expect, describe, test, afterEach, beforeEach } from '@jest/globals';
 import { Logger, LogType } from '../src/index';
 // @ts-ignore
-import { Log } from '../src/db/models/index';
+import { LogModel } from '../src/db/models/index';
 
 describe('Tests for the Logger class', () => {
   let flow: string;
@@ -18,7 +18,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.trace(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -34,7 +34,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.debug(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -50,7 +50,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.info(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -66,7 +66,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.warn(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -82,7 +82,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.error(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -98,7 +98,7 @@ describe('Tests for the Logger class', () => {
     const logger: Logger = new Logger(flow);
     await logger.fatal(content);
 
-    const savedLog = await Log.findOne({
+    const savedLog = await LogModel.findOne({
       where: {
         flow,
         content
@@ -111,7 +111,7 @@ describe('Tests for the Logger class', () => {
   });
 
   afterEach(async () => {
-    await Log.destroy({
+    await LogModel.destroy({
       where: {
         flow,
         content,

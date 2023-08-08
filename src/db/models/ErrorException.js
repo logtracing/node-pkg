@@ -9,28 +9,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ErrorException.belongsTo(models.LogGroup, {
+      ErrorException.belongsTo(models.LogGroupModel, {
         foreignKey: 'logGroupId',
         as: 'LogGroup',
       });
 
-      ErrorException.hasMany(models.Stack, {
+      ErrorException.hasMany(models.StackModel, {
         as: 'Stack',
       });
 
-      ErrorException.hasOne(models.SystemDetails, {
+      ErrorException.hasOne(models.SystemDetailsModel, {
         as: 'SystemDetails',
       });
 
-      ErrorException.hasOne(models.ExecutionDetails, {
+      ErrorException.hasOne(models.ExecutionDetailsModel, {
         as: 'ExecutionDetails',
       });
 
-      ErrorException.hasMany(models.EnvironmentDetails, {
+      ErrorException.hasMany(models.EnvironmentDetailsModel, {
         as: 'EnvironmentDetails',
       });
 
-      ErrorException.hasMany(models.ExtraDetails, {
+      ErrorException.hasMany(models.ExtraDetailsModel, {
         as: 'ExtraDetails',
       });
     }
