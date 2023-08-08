@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import { sequelize } from './db/models/index';
-import { LoggerOptions } from './types/general';
+import { LoggingOptions } from './types/general';
 import {
   CodeLineData,
   ErrorStackData,
@@ -68,7 +68,7 @@ export default class Logger extends AbstractLogger {
     this.restorePrepareStackTrace();
   }
 
-  public async report(opts: LoggerOptions | null = null): Promise<any> {
+  public async report(opts: LoggingOptions | null = null): Promise<any> {
     this.loadOsVars();
     this.loadNodeVars();
     this.loadEnvVars();
@@ -178,7 +178,7 @@ export default class Logger extends AbstractLogger {
     return true;
   }
 
-  private async saveErrorException(transaction: any, options: LoggerOptions | null): Promise<ErrorException | null> {
+  private async saveErrorException(transaction: any, options: LoggingOptions | null): Promise<ErrorException | null> {
     const generalInfo = this.errStack[0];
     const data: ErrorExceptionAttributes = {
       flow: this.flow,
@@ -300,7 +300,7 @@ export default class Logger extends AbstractLogger {
     });
   }
 
-  private async save(options: LoggerOptions | null = null): Promise<ErrorException | null> {
+  private async save(options: LoggingOptions | null = null): Promise<ErrorException | null> {
     const t = await sequelize.transaction();
     
     try {

@@ -1,10 +1,10 @@
 import { SlackMessageSection } from './slack';
 
-export interface LoggerOptions {
+export interface LoggingOptions {
     group?: any,
     slackMessageExtraSections?: SlackMessageSection[],
 };
 
-export interface GeneralOptions {
+export interface LogTracingOptions {
     slackIntegration?: boolean,
 }
