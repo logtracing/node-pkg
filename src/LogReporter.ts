@@ -8,7 +8,7 @@ export default class LogReporter {
   private static DEFAULT_LIMIT = 50;
   private static DEFAULT_OFFSET = 0;
 
-  private flow: string;
+  private readonly flow: string;
 
   constructor(flow: string) {
     this.flow = flow;
