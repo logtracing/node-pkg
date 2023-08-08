@@ -3,12 +3,12 @@ import os from 'os';
 import { sequelize } from './db/models/index';
 import { LoggingOptions } from './types/general';
 import {
-  CodeLineData,
-  ErrorStackData,
+  CodeLine,
+  ErrorStack,
   ExtraValue,
-  ExtraVarsData,
-  NodeVarsData,
-  OsVarsData,
+  ExtraVars,
+  NodeVars,
+  OsVars,
   PrepareStackTrace
 } from './types/errorException';
 import {
@@ -40,11 +40,11 @@ export default class Logger extends AbstractLogger {
   private readonly prepareStackTrace: PrepareStackTrace;
   private readonly codeLinesLimit: number;
 
-  private errStack: ErrorStackData[];
-  private osVars: OsVarsData | null;
-  private nodeVars: NodeVarsData | null;
+  private errStack: ErrorStack[];
+  private osVars: OsVars | null;
+  private nodeVars: NodeVars | null;
   private envVars: NodeJS.ProcessEnv | null;
-  private readonly extraVars: ExtraVarsData;
+  private readonly extraVars: ExtraVars;
 
   constructor(flow: string) {
     super(flow);
@@ -88,8 +88,8 @@ export default class Logger extends AbstractLogger {
     this.extraVars[identifier] = value;
   }
 
-  private readLinesSync(filePath: string, start: number, end: number): CodeLineData[] {
-    const lines: CodeLineData[] = [];
+  private readLinesSync(filePath: string, start: number, end: number): CodeLine[] {
+    const lines: CodeLine[] = [];
     const fileContent = fs.readFileSync(filePath, 'utf-8').split('\n');
 
     for (let i = start - 1; i < end - 1; i++) {
@@ -103,19 +103,19 @@ export default class Logger extends AbstractLogger {
   }
 
   private useCustomPrepareStackTrace(): void {
-    Error.prepareStackTrace = async (error: Error, stack: NodeJS.CallSite[]): Promise<ErrorStackData[]> => {
+    Error.prepareStackTrace = async (error: Error, stack: NodeJS.CallSite[]): Promise<ErrorStack[]> => {
       const errorName: string = error.name;
       const errorMessage: string = error.message;
       const errorStack: string = error.stack ?? '';
 
-      return stack.map((callSite): ErrorStackData => {
+      return stack.map((callSite): ErrorStack => {
         const lineNumber: number = callSite.getLineNumber() ?? 0;
         const fileName: string = callSite.getFileName() ?? '';
-        let code: CodeLineData[] = [];
+        let code: CodeLine[] = [];
 
         if (fileName && !fileName.startsWith('node')) {
           code = this.readLinesSync(fileName, lineNumber - this.codeLinesLimit, lineNumber + this.codeLinesLimit)
-            .map((line: CodeLineData) => {
+            .map((line: CodeLine) => {
               return {
                 ...line,
                 currentLine: lineNumber,
@@ -198,7 +198,7 @@ export default class Logger extends AbstractLogger {
   }
 
   private async saveStackInformation(errorException: ErrorExceptionModel, transaction: any): Promise<void> {
-    for (const stack of this.errStack as ErrorStackData[]) {
+    for (const stack of this.errStack as ErrorStack[]) {
       const stackData: StackAttributes = {
         file: stack.fileName,
         function: stack.functionName,

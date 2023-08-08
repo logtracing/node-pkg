@@ -1,12 +1,12 @@
 export type PrepareStackTrace = ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
 
-export interface CodeLineData {
+export interface CodeLine {
     line: number;
     content: string;
     currentLine?: number;
 }
 
-export interface ErrorStackData {
+export interface ErrorStack {
     errorName: string,
     errorMessage: string,
     errorStack: string,
@@ -14,16 +14,16 @@ export interface ErrorStackData {
     fileName: string,
     lineNumber: number,
     columnNumber: number,
-    code: CodeLineData[],
+    code: CodeLine[],
 }
 
-export interface OsUserData {
+export interface OsUser {
     username: string;
     uid: number;
     gid: number;
 }
 
-export interface OsCpuTimeData {
+export interface OsCpuTime {
     user: number;
     nice: number;
     sys: number;
@@ -31,23 +31,23 @@ export interface OsCpuTimeData {
     irq: number;
 }
 
-export interface OsCpuData {
+export interface OsCpu {
     model: string;
     speed: number;
-    times: OsCpuTimeData;
+    times: OsCpuTime;
 }
 
-export interface OsVarsData {
+export interface OsVars {
     arch: string;
-    cpus: OsCpuData[];
+    cpus: OsCpu[];
     hostname: string;
     platform: string;
     release: string;
     version: string;
-    user: OsUserData;
+    user: OsUser;
 }
 
-export interface NodeVarsData {
+export interface NodeVars {
     version: string;
     args: string[],
     datetime: number;
@@ -55,6 +55,6 @@ export interface NodeVarsData {
 
 export type ExtraValue = object | string;
 
-export interface ExtraVarsData {
+export interface ExtraVars {
     [identifier: string]: string;
 }
