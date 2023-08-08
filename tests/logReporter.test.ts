@@ -2,7 +2,7 @@ import { expect, describe, test, afterAll, beforeAll } from '@jest/globals';
 import { Logger, LogReporter } from '../src/index';
 // @ts-ignore
 import { Log, LogGroup } from '../src/db/models/index';
-import { LogReporterObject } from '../src/types';
+import { LogReporterObject } from '../src/types/logReporter';
 
 describe('Tests for the LogReporter class and its simple logs', () => {
   let flow: string;

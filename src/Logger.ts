@@ -1,5 +1,7 @@
 import { sequelize } from './db/models/index';
-import { GeneralOptions, LoggerOptions, LogModelData, LogType } from './types';
+import { GeneralOptions, LoggerOptions } from './types/general';
+import { LogModelData } from './types/models';
+import { LogType } from './types/logger';
 // @ts-ignore
 import { Log } from './db/models/index';
 import AbstractLogger from './AbstractLogger';

@@ -1,4 +1,5 @@
-import { LogReporterOptions, ModelSearchQuery, LogReporterSegments, LogReporterObject } from './types';
+import { LogReporterOptions, LogReporterSegments, LogReporterObject } from './types/logReporter';
+import { ModelSearchQuery } from './types/models';
 // @ts-ignore
 import { Log, LogGroup } from './db/models/index';
 import { Op } from 'sequelize';

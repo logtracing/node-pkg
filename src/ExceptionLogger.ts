@@ -1,24 +1,26 @@
 import fs from 'fs';
 import os from 'os';
 import { sequelize } from './db/models/index';
+import { LoggerOptions } from './types/general';
 import {
   CodeLineData,
+  ErrorStackData,
+  ExtraValue,
+  ExtraVarsData,
+  NodeVarsData,
+  OsVarsData,
+  PrepareStackTrace
+} from './types/errorException';
+import {
   CodeLineModelData,
   EnvironmentDetailsModelData,
   ErrorExceptionModelData,
-  ErrorStackData,
   ExecutionArgumentModelData,
   ExecutionDetailsModelData,
   ExtraDetailsModelData,
-  ExtraValue,
-  ExtraVarsData,
-  LoggerOptions,
-  NodeVarsData,
-  OsVarsData,
-  PrepareStackTrace,
   StackModelData,
-  SystemDetailsModelData,
-} from './types';
+  SystemDetailsModelData
+} from './types/models';
 import { // @ts-ignore
   CodeLine, // @ts-ignore
   EnvironmentDetails, // @ts-ignore
