@@ -1,6 +1,6 @@
 import { WebClient, LogLevel, ChatPostMessageArguments } from '@slack/web-api';
 // @ts-ignore
-import { Log } from './db/models/index';
+import { LogModel } from './db/models/index';
 
 class SlackMessageSender {
   private static instance: SlackMessageSender;
@@ -20,7 +20,7 @@ class SlackMessageSender {
     });
   }
 
-  getBaseMessageTemplate(options: { title: string, log: Log }): ChatPostMessageArguments {
+  getBaseMessageTemplate(options: { title: string, log: LogModel }): ChatPostMessageArguments {
     return {
       token: process.env.SLACK_TOKEN,
       channel: process.env.SLACK_CHANNEL_ID!,
@@ -63,7 +63,7 @@ class SlackMessageSender {
 
   async publishMessage(template: ChatPostMessageArguments): Promise<boolean> {
     try {
-      const result = await this.slackClient.chat.postMessage(template);
+      await this.slackClient.chat.postMessage(template);
       return true;
     } catch (err) {
       console.error(err);
