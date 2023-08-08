@@ -1,6 +1,6 @@
 import { sequelize } from './db/models/index';
 import { GeneralOptions, LoggerOptions } from './types/general';
-import { LogModelData } from './types/models';
+import { LogAttributes } from './types/models';
 import { LogType } from './types/logger';
 // @ts-ignore
 import { Log } from './db/models/index';
@@ -9,13 +9,13 @@ import SlackMessageSender from './SlackMessageSender';
 import { ChatPostMessageArguments } from '@slack/web-api';
 
 export default class Logger extends AbstractLogger {
-  private slackIntegration: boolean = false;
+  private readonly slackIntegration: boolean = false;
 
   constructor(flow: string, options?: GeneralOptions) {
     super(flow);
 
     if (options && options.slackIntegration) {
-      this.slackIntegration = !!options.slackIntegration;
+      this.slackIntegration = options.slackIntegration;
     }
   }
 
@@ -71,7 +71,7 @@ export default class Logger extends AbstractLogger {
     const t = await sequelize.transaction();
 
     try {
-      const data: LogModelData = {
+      const data: LogAttributes = {
           level,
           flow: this.flow,
           content,

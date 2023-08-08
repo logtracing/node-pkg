@@ -1,4 +1,4 @@
-export interface LogModelData {
+export interface LogAttributes {
     level: string,
     flow: string,
     content: string,
@@ -7,7 +7,7 @@ export interface LogModelData {
     updatedAt?: Date,
 }
 
-export interface ErrorExceptionModelData {
+export interface ErrorExceptionAttributes {
     package: string,
     flow: string,
     name: string,
@@ -18,7 +18,7 @@ export interface ErrorExceptionModelData {
     updatedAt?: Date,
 }
 
-export interface StackModelData {
+export interface StackAttributes {
     file: string,
     function: string,
     line: number,
@@ -26,14 +26,14 @@ export interface StackModelData {
     errorExceptionId: number,
 }
 
-export interface CodeLineModelData {
+export interface CodeLineAttributes {
     line: number,
     content: string,
     isErrorLine: boolean,
     stackId: number,
 }
 
-export interface SystemDetailsModelData {
+export interface SystemDetailsAttributes {
     arch: string,
     processor: string,
     hostname: string,
@@ -44,25 +44,25 @@ export interface SystemDetailsModelData {
     errorExceptionId: number,
 }
 
-export interface ExecutionDetailsModelData {
+export interface ExecutionDetailsAttributes {
     language: string,
     version: string,
     executionFinishTime: Date,
     errorExceptionId: number,
 }
 
-export interface ExecutionArgumentModelData {
+export interface ExecutionArgumentAttributes {
     argument: string,
     executionDetailsId: number,
 }
 
-export interface EnvironmentDetailsModelData {
+export interface EnvironmentDetailsAttributes {
     name: string,
     value: string,
     errorExceptionId: number,
 }
 
-export interface ExtraDetailsModelData {
+export interface ExtraDetailsAttributes {
     name: string,
     value: string,
     isJson: boolean,

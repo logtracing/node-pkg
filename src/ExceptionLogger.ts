@@ -12,14 +12,14 @@ import {
   PrepareStackTrace
 } from './types/errorException';
 import {
-  CodeLineModelData,
-  EnvironmentDetailsModelData,
-  ErrorExceptionModelData,
-  ExecutionArgumentModelData,
-  ExecutionDetailsModelData,
-  ExtraDetailsModelData,
-  StackModelData,
-  SystemDetailsModelData
+  CodeLineAttributes,
+  EnvironmentDetailsAttributes,
+  ErrorExceptionAttributes,
+  ExecutionArgumentAttributes,
+  ExecutionDetailsAttributes,
+  ExtraDetailsAttributes,
+  StackAttributes,
+  SystemDetailsAttributes
 } from './types/models';
 import { // @ts-ignore
   CodeLine, // @ts-ignore
@@ -44,7 +44,7 @@ export default class Logger extends AbstractLogger {
   private osVars: OsVarsData | null;
   private nodeVars: NodeVarsData | null;
   private envVars: NodeJS.ProcessEnv | null;
-  private extraVars: ExtraVarsData;
+  private readonly extraVars: ExtraVarsData;
 
   constructor(flow: string) {
     super(flow);
@@ -77,7 +77,7 @@ export default class Logger extends AbstractLogger {
   }
 
   public addExtra(identifier: string, extra: ExtraValue): void {
-    let value: ExtraValue = extra;
+    let value: ExtraValue;
 
     if (typeof(extra) === 'object') {
       value = JSON.stringify(extra);
@@ -180,7 +180,7 @@ export default class Logger extends AbstractLogger {
 
   private async saveErrorException(transaction: any, options: LoggerOptions | null): Promise<ErrorException | null> {
     const generalInfo = this.errStack[0];
-    const data: ErrorExceptionModelData = {
+    const data: ErrorExceptionAttributes = {
       flow: this.flow,
       package: Logger.PACKAGE,
       name: generalInfo.errorName,
@@ -197,9 +197,9 @@ export default class Logger extends AbstractLogger {
     });
   }
 
-  private async saveStackInformation(errorException: ErrorException, transaction: any, options: LoggerOptions | null): Promise<void> {
+  private async saveStackInformation(errorException: ErrorException, transaction: any): Promise<void> {
     for (const stack of this.errStack as ErrorStackData[]) {
-      const stackData: StackModelData = {
+      const stackData: StackAttributes = {
         file: stack.fileName,
         function: stack.functionName,
         line: stack.lineNumber,
@@ -211,7 +211,7 @@ export default class Logger extends AbstractLogger {
         transaction: transaction,
       });
 
-      const codeLinesData: CodeLineModelData[] = [];
+      const codeLinesData: CodeLineAttributes[] = [];
       for (const line of stack.code) {
         codeLinesData.push({
           line: line.line,
@@ -224,11 +224,11 @@ export default class Logger extends AbstractLogger {
       await CodeLine.bulkCreate(codeLinesData, {
         transaction: transaction,
       });
-    };
+    }
   }
 
-  private async saveSystemDetails(errorException: ErrorException, transaction: any, options: LoggerOptions | null): Promise<void> {
-    const systemDetailsData: SystemDetailsModelData = {
+  private async saveSystemDetails(errorException: ErrorException, transaction: any): Promise<void> {
+    const systemDetailsData: SystemDetailsAttributes = {
       arch: this.osVars?.arch ?? '',
       processor: this.osVars?.cpus[0].model ?? '',
       hostname: this.osVars?.hostname ?? '',
@@ -244,8 +244,8 @@ export default class Logger extends AbstractLogger {
     });
   }
 
-  private async saveExecutionDetails(errorException: ErrorException, transaction: any, options: LoggerOptions | null): Promise<void> {
-    const executionDetailsData: ExecutionDetailsModelData = {
+  private async saveExecutionDetails(errorException: ErrorException, transaction: any): Promise<void> {
+    const executionDetailsData: ExecutionDetailsAttributes = {
       language: Logger.LANGUAGE,
       version: this.nodeVars?.version ?? '',
       executionFinishTime: new Date(this.nodeVars!.datetime * 1000),
@@ -256,7 +256,7 @@ export default class Logger extends AbstractLogger {
       transaction: transaction,
     });
 
-    const executionArgumentData: ExecutionArgumentModelData[] = [];
+    const executionArgumentData: ExecutionArgumentAttributes[] = [];
     for (const argument of this.nodeVars!.args) {
       executionArgumentData.push({
         argument: argument,
@@ -269,8 +269,8 @@ export default class Logger extends AbstractLogger {
     });
   }
 
-  private async saveEnvironmentDetails(errorException: ErrorException, transaction: any, options: LoggerOptions | null): Promise<void> {
-    const environmentDetailsData: EnvironmentDetailsModelData[] = [];
+  private async saveEnvironmentDetails(errorException: ErrorException, transaction: any): Promise<void> {
+    const environmentDetailsData: EnvironmentDetailsAttributes[] = [];
       for (const varKey in this.envVars) {
         environmentDetailsData.push({
           name: varKey,
@@ -284,8 +284,8 @@ export default class Logger extends AbstractLogger {
       });
   }
 
-  private async saveExtraDetails(errorException: ErrorException, transaction: any, options: LoggerOptions | null): Promise<void> {
-    const extraDetailsData: ExtraDetailsModelData[] = [];
+  private async saveExtraDetails(errorException: ErrorException, transaction: any): Promise<void> {
+    const extraDetailsData: ExtraDetailsAttributes[] = [];
     for (const extraKey in this.extraVars) {
       extraDetailsData.push({
         name: extraKey,
@@ -305,13 +305,13 @@ export default class Logger extends AbstractLogger {
     
     try {
       const errorException: ErrorException = await this.saveErrorException(t, options);
-      await this.saveStackInformation(errorException, t, options);
-      await this.saveSystemDetails(errorException, t, options);
-      await this.saveExecutionDetails(errorException, t, options);
-      await this.saveEnvironmentDetails(errorException, t, options);
+      await this.saveStackInformation(errorException, t);
+      await this.saveSystemDetails(errorException, t);
+      await this.saveExecutionDetails(errorException, t);
+      await this.saveEnvironmentDetails(errorException, t);
 
       if (Object.keys(this.extraVars).length) {
-        await this.saveExtraDetails(errorException, t, options);
+        await this.saveExtraDetails(errorException, t);
       }
 
       await t.commit();
