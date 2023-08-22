@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ExecutionDetails.hasMany(models.ExecutionArguments, {
+      ExecutionDetails.hasMany(models.ExecutionArgumentsModel, {
         as: 'ExecutionArguments',
       });
       
-      ExecutionDetails.belongsTo(models.ErrorException, {
+      ExecutionDetails.belongsTo(models.ErrorExceptionModel, {
         foreignKey: 'errorExceptionId',
         as: 'ErrorException',
       });

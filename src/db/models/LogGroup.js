@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      LogGroup.hasMany(models.Log, {
+      LogGroup.hasMany(models.LogModel, {
         as: 'Logs',
       });
 
-      LogGroup.hasMany(models.ErrorException, {
+      LogGroup.hasMany(models.ErrorExceptionModel, {
         as: 'ErrorExceptions',
       });
     }

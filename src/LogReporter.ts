@@ -1,13 +1,14 @@
-import { LogReporterOptions, ModelSearchQuery, LogReporterSegments, LogReporterObject } from './types';
+import { LogReporterOptions, LogReporterSegments, LogReporterObject } from './types/logReporter';
+import { ModelSearchQuery } from './types/models';
 // @ts-ignore
-import { Log, LogGroup } from './db/models/index';
+import { LogModel, LogGroupModel } from './db/models/index';
 import { Op } from 'sequelize';
 
 export default class LogReporter {
   private static DEFAULT_LIMIT = 50;
   private static DEFAULT_OFFSET = 0;
 
-  private flow: string;
+  private readonly flow: string;
 
   constructor(flow: string) {
     this.flow = flow;
@@ -45,14 +46,14 @@ export default class LogReporter {
         };
 
         query.include = [{
-          model: LogGroup,
+          model: LogGroupModel,
           as: 'LogGroup'
         }]
       }
 
-      Log.findAll(query)
+      LogModel.findAll(query)
         .then((data: any) => resolve(
-          data.map((log: Log) => {
+          data.map((log: LogModel) => {
             const segments = {
               group: options.groupName ?? null,
             };
@@ -78,7 +79,7 @@ export default class LogReporter {
           ['createdAt', 'DESC'],
         ],
         include: [
-          { model: LogGroup, as: 'LogGroup' }
+          { model: LogGroupModel, as: 'LogGroup' }
         ],
       };
 
@@ -99,8 +100,8 @@ export default class LogReporter {
         };
       }
 
-      Log.findAll(query)
-        .then((data: any) => resolve(data.map((log: Log) => {
+      LogModel.findAll(query)
+        .then((data: any) => resolve(data.map((log: LogModel) => {
           return {
             flow: this.flow,
             datetime: this.formatDate(log.createdAt),
@@ -113,7 +114,7 @@ export default class LogReporter {
     });
   }
 
-  private format(log: Log, segments: LogReporterSegments = {}): string {
+  private format(log: LogModel, segments: LogReporterSegments = {}): string {
     const newSegments: string[] = [
       `[${log.level.padEnd(5)}]`,
       `[${this.formatDate(log.createdAt)}]`,

@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      SystemDetails.belongsTo(models.ErrorException, {
+      SystemDetails.belongsTo(models.ErrorExceptionModel, {
         foreignKey: 'errorExceptionId',
         as: 'ErrorException',
       });

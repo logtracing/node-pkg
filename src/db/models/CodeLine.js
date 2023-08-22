@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      CodeLine.belongsTo(models.Stack, {
+      CodeLine.belongsTo(models.StackModel, {
         foreignKey: 'stackId',
         as: 'Stack',
       });

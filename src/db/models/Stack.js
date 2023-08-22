@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Stack.hasMany(models.CodeLine, {
+      Stack.hasMany(models.CodeLineModel, {
         as: 'CodeLines',
       });
 
-      Stack.belongsTo(models.ErrorException, {
+      Stack.belongsTo(models.ErrorExceptionModel, {
         foreignKey: 'errorExceptionId',
         as: 'ErrorException',
       });

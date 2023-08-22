@@ -1,5 +1,5 @@
 // @ts-ignore
-import { LogGroup } from './db/models/index';
+import { LogGroupModel } from './db/models/index';
 
 export default abstract class AbstractLogger {
   private readonly _flow: string;
@@ -16,11 +16,11 @@ export default abstract class AbstractLogger {
     return this._flow;
   }
 
-  public async getOrCreateGroup(name: string): Promise<LogGroup | null> {
+  public async getOrCreateGroup(name: string): Promise<LogGroupModel | null> {
     try {
       const groupName: string = name.toLocaleLowerCase();
 
-      const [group] = await LogGroup.findOrCreate({
+      const [group] = await LogGroupModel.findOrCreate({
         where: { name: groupName },
       });
 
